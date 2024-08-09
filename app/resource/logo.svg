@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke-linejoin: round;
+        stroke-width: 5px;
+      }
+
+      .cls-1, .cls-2 {
+        stroke: #fff;
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: #fff;
+        stroke-width: 1px;
+      }
+    </style>
+  </defs>
+  <path id="椭圆_1" data-name="椭圆 1" class="cls-1" d="M30.7,6.444a25.011,25.011,0,0,1,0,50.021,25.281,25.281,0,0,1-2.939-.171A25.012,25.012,0,0,1,30.7,6.444ZM41.74,43.773c16.4,0.126,16.56,13.8,16.56,13.8H27.94S25.336,43.648,41.74,43.773Zm-13.8,13.8H7.24S5.673,50.555,10,46.533"/>
+  <path id="椭圆_2_拷贝" data-name="椭圆 2 拷贝" class="cls-2" d="M36.91,21.693c1.905,0,3.45,3.707,3.45,8.28s-1.545,8.28-3.45,8.28-3.45-3.707-3.45-8.28S35.005,21.693,36.91,21.693Zm9.66,0c1.905,0,3.45,3.707,3.45,8.28s-1.545,8.28-3.45,8.28-3.45-3.707-3.45-8.28S44.665,21.693,46.57,21.693Z"/>
+  <image id="图层_2" data-name="图层 2" x="6" y="48" width="9" height="9" xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAgElEQVQYlX2QOwrCUBBFDyGNmxAL62QJksa92Nq7FF1IIIIJWLsLS3fgkXm+iEWSC3e4DAfmgzp6pdZq8ddLLvlqDXTAFngBPTAAz5QzPTivcwDVAhDaFUCTR07pDtwC2ixApygBvWeAC3BNSd1P7NHml6TDxusO6iP7qJa/PykfuO6m3ZX4tpwAAAAASUVORK5CYII="/>
+</svg>
