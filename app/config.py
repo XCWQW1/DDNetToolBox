@@ -7,10 +7,7 @@ from qfluentwidgets import (qconfig, QConfig, ConfigItem, FolderListValidator, T
 from app.util.config_directory import get_ddnet_directory
 
 
-if getattr(sys, 'frozen', False):
-    base_path = sys._MEIPASS
-else:
-    base_path = os.path.dirname(__file__)
+base_path = os.path.dirname(__file__)
 
 
 class Config(QConfig):
@@ -21,4 +18,4 @@ class Config(QConfig):
 
 
 cfg = Config()
-qconfig.load(base_path + 'app/config/config.json', cfg)
+qconfig.load(base_path + '/config/config.json', cfg)

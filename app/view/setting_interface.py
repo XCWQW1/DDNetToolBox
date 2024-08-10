@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from qfluentwidgets import (OptionsSettingCard, ScrollArea, ExpandLayout, FluentIcon, SettingCardGroup, setTheme,
                             InfoBar, isDarkTheme, Theme, PushSettingCard, SwitchSettingCard)
 from PyQt5.QtWidgets import QWidget, QFileDialog
-from app.config import cfg
+from app.config import cfg, base_path
 from app.globals import GlobalsVal
 
 
@@ -69,7 +69,7 @@ class SettingInterface(ScrollArea):
         self.scrollWidget.setObjectName('scrollWidget')
 
         theme = 'dark' if isDarkTheme() else 'light'
-        with open(f'app/resource/{theme}/setting_interface.qss', encoding='utf-8') as f:
+        with open(base_path + f'/resource/{theme}/setting_interface.qss', encoding='utf-8') as f:
             self.setStyleSheet(f.read())
 
     def __initLayout(self):

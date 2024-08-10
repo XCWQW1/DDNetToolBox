@@ -1,0 +1,14 @@
+name: 构建Linux版
+run-name: 构建Linux版
+on: [push]
+
+jobs:
+  Build-Linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.11' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64'
+      - run: pip install -r requirements.txt

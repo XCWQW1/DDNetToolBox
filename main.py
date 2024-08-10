@@ -1,4 +1,3 @@
-# coding:utf-8
 import json
 import os
 import sys
@@ -51,6 +50,8 @@ class MainWindow(FluentWindow):
             if i == "ddnet-info.json":
                 with open(f'{file_list}/ddnet-info.json', encoding='utf-8') as f:
                     GlobalsVal.ddnet_info = json.loads(f.read())
+            if i == "ddnet-serverlist-urls.cfg":
+                GlobalsVal.server_list_file = True
 
         # 创建子界面
         self.homeInterface = HomeInterface()
@@ -71,7 +72,7 @@ class MainWindow(FluentWindow):
 
     def initWindow(self):
         self.resize(800, 600)
-        self.setWindowIcon(QIcon(base_path + 'app/resource/logo.svg'))
+        self.setWindowIcon(QIcon(base_path + '/resource/logo.svg'))
         self.setWindowTitle('DDNetToolBox')
 
 

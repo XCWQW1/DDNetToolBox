@@ -51,14 +51,13 @@ class CheckUpdate(QThread):
         self.finished.emit(response)
 
 
-
 class TEECard(CardWidget):
     def __init__(self, name: str, parent=None):
         super().__init__(parent)
         self.hBoxLayout = QHBoxLayout()
         self.vBoxLayout = QVBoxLayout()
 
-        self.iconWidget = ImageLabel(base_path + 'app/resource/logo.png', self)
+        self.iconWidget = ImageLabel(base_path + '/resource/logo.png', self)
         self.iconWidget.scaledToHeight(120)
 
         self.setLayout(self.hBoxLayout)
@@ -107,13 +106,13 @@ class TEECard(CardWidget):
                                f'入坑时间：{datetime.datetime.fromtimestamp(json_data["first_finish"]["timestamp"])}')
 
 
-class NewMapCard(HeaderCardWidget):
+class FriendList(HeaderCardWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.vBoxLayout = QVBoxLayout()
         self.hBoxLayout = QHBoxLayout()
 
-        self.setTitle('新图推荐')
+        self.setTitle('好友列表')
         self.setBorderRadius(8)
 
         self.infoLabel = BodyLabel('此产品适用于你的设备。具有复选标记的项目符合开发人员的系统要求。', self)
@@ -149,7 +148,7 @@ class HomeInterface(QWidget):
         except:
             self.TEECARD("nameless tee", "[D] nameless te")
 
-        self.vBoxLayout.addWidget(NewMapCard(), Qt.AlignBottom)
+        self.vBoxLayout.addWidget(FriendList(), Qt.AlignBottom)
 
         if cfg.get(cfg.DDNetCheckUpdate):
             self.check_update = CheckUpdate()
