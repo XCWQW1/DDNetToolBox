@@ -21,7 +21,7 @@ jobs:
         run: python setup.py build
 
       - name: 上传文件
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: linux-build
           path: build/
@@ -52,7 +52,7 @@ jobs:
         wine python setup.py build
 
     - name: 上传文件
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: windows-build
         path: build/
