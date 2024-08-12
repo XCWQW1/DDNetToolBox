@@ -1,8 +1,8 @@
 from functools import partial
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QTableWidgetItem, QVBoxLayout, QHeaderView
-from qfluentwidgets import TableWidget, CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, MessageBox
+from PyQt5.QtWidgets import QWidget, QHBoxLayout, QTableWidgetItem, QVBoxLayout, QHeaderView, QLabel
+from qfluentwidgets import TableWidget, CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, MessageBox, TitleLabel
 
 from app.config import cfg
 from app.globals import GlobalsVal
@@ -14,6 +14,7 @@ class ServerListInterface(QWidget):
         self.setObjectName("ServerListInterface")
 
         self.vBoxLayout = QVBoxLayout(self)
+        self.vBoxLayout.addWidget(TitleLabel('服务器列表管理', self))
         self.setLayout(self.vBoxLayout)
 
         self.commandBar = CommandBar()
@@ -27,7 +28,7 @@ class ServerListInterface(QWidget):
 
         self.table = TableWidget(self)
         self.table.setBorderVisible(True)
-        self.table.setBorderRadius(8)
+        self.table.setBorderRadius(5)
         self.table.setWordWrap(False)
         self.table.setColumnCount(1)
 

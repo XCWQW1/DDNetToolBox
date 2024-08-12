@@ -1,15 +1,35 @@
-from cx_Freeze import setup, Executable
+from PyInstaller.__main__ import run
+import shutil
+import os
 
-# Dependencies are automatically detected, but they might need fine-tuning.
-build_exe_options = {
-    "excludes": ["tkinter", "unittest"],
-    "zip_include_packages": ["encodings", "PySide6", "shiboken6"],
-}
+main_script = 'main.py'
 
-setup(
-    name="DDNetToolBox",
-    version="1.0.0",
-    description="DDNetToolBox",
-    options={"build_exe": build_exe_options},
-    executables=[Executable("main.py", base="gui")],
-)
+files_and_folders = [
+    'main.py',
+    'app/',
+]
+
+datas = []
+for item in files_and_folders:
+    abs_path = os.path.abspath(item)
+    if os.path.isdir(abs_path):
+        datas.append((abs_path + os.path.sep, item))
+    else:
+        datas.append((abs_path, '.'))
+
+pyinstaller_command = [
+    '--onefile',
+    '--windowed',
+    '--name=DDNetToolBox',
+    '--clean',
+    f'--runtime-tmpdir=app/temp',
+]
+
+for data in datas:
+    pyinstaller_command.extend(['--add-data', f'{data[0]}{os.pathsep}{data[1]}'])
+
+pyinstaller_command.append(main_script)
+
+run(pyinstaller_command)
+
+# shutil.copytree("build/app/resource", "dist")

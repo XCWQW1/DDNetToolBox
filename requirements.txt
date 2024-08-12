@@ -4,4 +4,4 @@ PyQt5-Frameless-Window>=0.3.9
 PyQt5-Qt5>=5.15.14
 PyQt5_sip>=12.15.0
 requests>=2.32.3
-cx_Freeze>=7.2.0
+pyinstaller>=6.10.0

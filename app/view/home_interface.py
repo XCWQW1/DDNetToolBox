@@ -4,9 +4,11 @@ import requests
 from PyQt5.QtGui import QPixmap
 from app.globals import GlobalsVal
 from app.config import cfg, base_path
-from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QEasingCurve
 from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
-from qfluentwidgets import ImageLabel, CardWidget, SubtitleLabel, BodyLabel, HeaderCardWidget, IconWidget, InfoBarIcon, HyperlinkLabel, InfoBar, InfoBarPosition
+from qfluentwidgets import ImageLabel, CardWidget, SubtitleLabel, BodyLabel, HeaderCardWidget, IconWidget, InfoBarIcon, \
+    HyperlinkLabel, InfoBar, InfoBarPosition, CaptionLabel, FlowLayout, SingleDirectionScrollArea, InfoBadge, \
+    InfoBadgePosition, setFont
 
 
 class ImageLoader(QThread):
@@ -106,31 +108,52 @@ class TEECard(CardWidget):
                                f'入坑时间：{datetime.datetime.fromtimestamp(json_data["first_finish"]["timestamp"])}')
 
 
+class FriendCard(CardWidget):
+    tee_image_size = 68
+
+    def __init__(self, name, parent=None):
+        super().__init__(parent)
+        if type(name) == list:
+            name = name[0]
+
+        self.setFixedSize(168, 50)
+
+        self.iconWidget = ImageLabel(base_path + '/resource/logo.png', self)
+        self.iconWidget.scaledToHeight(self.tee_image_size)
+        self.label = CaptionLabel(name, self)
+
+        self.hBoxLayout = QHBoxLayout(self)
+        self.hBoxLayout.setContentsMargins(0, 11, 6, 2)
+        self.hBoxLayout.addWidget(self.iconWidget)
+        self.hBoxLayout.addWidget(self.label, 0, Qt.AlignBottom | Qt.AlignRight)
+
+        self.image_loader = ImageLoader('https://xc.null.red:8043/api/ddnet/draw_player_skin?name={}'.format(name))
+        self.image_loader.finished.connect(self.on_image_loaded)
+        self.image_loader.start()
+
+    def on_image_loaded(self, pixmap):
+        self.iconWidget.setPixmap(pixmap)
+        self.iconWidget.scaledToHeight(self.tee_image_size)
+
+
 class FriendList(HeaderCardWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.vBoxLayout = QVBoxLayout()
-        self.hBoxLayout = QHBoxLayout()
-
         self.setTitle('好友列表')
-        self.setBorderRadius(8)
+        self.fBoxLayout = FlowLayout()
 
-        self.infoLabel = BodyLabel('此产品适用于你的设备。具有复选标记的项目符合开发人员的系统要求。', self)
-        self.successIcon = IconWidget(InfoBarIcon.SUCCESS, self)
-        self.detailButton = HyperlinkLabel('详细信息', self)
+        try:
+            for i in GlobalsVal.ddnet_setting_config['add_friend']:
+                self.fBoxLayout.addWidget(FriendCard(i))
+        except:
+            self.label = SubtitleLabel("没有获取到任何数据 T-T", self)
+            self.hBoxLayout = QHBoxLayout()
 
-        self.successIcon.setFixedSize(16, 16)
-        self.hBoxLayout.setSpacing(10)
-        self.vBoxLayout.setSpacing(16)
-        self.hBoxLayout.setContentsMargins(0, 0, 0, 0)
-        self.vBoxLayout.setContentsMargins(0, 0, 0, 0)
+            setFont(self.label, 24)
+            self.hBoxLayout.addWidget(self.label, 1, Qt.AlignCenter)
+            self.viewLayout.addLayout(self.hBoxLayout)
 
-        self.hBoxLayout.addWidget(self.successIcon)
-        self.hBoxLayout.addWidget(self.infoLabel)
-        self.vBoxLayout.addLayout(self.hBoxLayout)
-        self.vBoxLayout.addWidget(self.detailButton)
-
-        self.viewLayout.addLayout(self.vBoxLayout)
+        self.viewLayout.addLayout(self.fBoxLayout)
 
 
 class HomeInterface(QWidget):

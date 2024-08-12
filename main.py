@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import sys
 
 from PyQt5.QtCore import Qt, QLocale
@@ -11,23 +12,12 @@ from qfluentwidgets import FluentIcon as FIF
 
 from app.config import cfg, base_path
 from app.globals import GlobalsVal
+from app.view.cfg_interface import CFGInterface
 from app.view.home_interface import HomeInterface
+from app.view.resource_download_interface import ResourceDownloadInterface
+from app.view.resource_interface import ResourceInterface
 from app.view.setting_interface import SettingInterface
 from app.view.server_list_interface import ServerListInterface
-
-
-class Widget(QFrame):
-    def __init__(self, text: str, parent=None):
-        super().__init__(parent=parent)
-        self.label = SubtitleLabel(text, self)
-        self.hBoxLayout = QHBoxLayout(self)
-
-        setFont(self.label, 24)
-        self.label.setAlignment(Qt.AlignCenter)
-        self.hBoxLayout.addWidget(self.label, 1, Qt.AlignCenter)
-
-        # 必须给子界面设置全局唯一的对象名
-        self.setObjectName(text.replace(' ', '-'))
 
 
 class MainWindow(FluentWindow):
@@ -36,17 +26,31 @@ class MainWindow(FluentWindow):
         super().__init__()
 
         file_list = cfg.get(cfg.DDNetFolder)
+        GlobalsVal.ddnet_cfg_list = [file for file in os.listdir(file_list) if file.endswith('.cfg')]
         for i in os.listdir(file_list):
             if i == "settings_ddnet.cfg":
                 with open(f'{file_list}/settings_ddnet.cfg', encoding='utf-8') as f:
-                    for a in f.read().split('\n'):
-                        a = a.split(' ', 1)
-                        if len(a) == 2:
-                            a[1] = a[1].split(" ")
-                            if len(a[1]) != 1:
-                                GlobalsVal.ddnet_setting_config[a[0]] = a[1]
-                            else:
-                                GlobalsVal.ddnet_setting_config[a[0]] = a[1][0].strip('\'"')
+                    lines = f.read().strip().split('\n')
+                    for line in lines:
+                        if line.strip():
+                            parts = re.split(r'\s+', line, maxsplit=1)
+                            if len(parts) == 2:
+                                key, value = parts
+                                if ',' in value:
+                                    value = [v.strip(' "') for v in re.split(r',', value)]
+                                else:
+                                    value = self.remove_quotes(value)
+
+                                if key in GlobalsVal.ddnet_setting_config:
+                                    if not isinstance(GlobalsVal.ddnet_setting_config[key], list):
+                                        GlobalsVal.ddnet_setting_config[key] = [GlobalsVal.ddnet_setting_config[key]]
+                                    else:
+                                        GlobalsVal.ddnet_setting_config[key].append(value)
+                                else:
+                                    if type(value) != str:
+                                        GlobalsVal.ddnet_setting_config[key] = [value]
+                                    else:
+                                        GlobalsVal.ddnet_setting_config[key] = value
             if i == "ddnet-info.json":
                 with open(f'{file_list}/ddnet-info.json', encoding='utf-8') as f:
                     GlobalsVal.ddnet_info = json.loads(f.read())
@@ -54,24 +58,36 @@ class MainWindow(FluentWindow):
                 GlobalsVal.server_list_file = True
 
         # 创建子界面
-        self.homeInterface = HomeInterface()
-        self.CFGInterface = Widget('没写', self)
+        self.homeInterface = HomeInterface(self)
+        self.CFGInterface = CFGInterface()
+        self.ResourceInterface = ResourceInterface()
+        self.ResourceDownloadInterface = ResourceDownloadInterface()
         self.ServerListMirrorInterface = ServerListInterface()
 
-        self.settingInterface = SettingInterface(self)
+        self.settingInterface = SettingInterface()
 
         self.initNavigation()
         self.initWindow()
+
+    @staticmethod
+    def remove_quotes(text):
+        if text.startswith('"') and text.endswith('"'):
+            text = text[1:-1]
+        if '" "' in text:
+            text = re.split(r'" "', text)
+        return text
 
     def initNavigation(self):
         self.addSubInterface(self.homeInterface, FIF.HOME, '首页')
         self.addSubInterface(self.CFGInterface, FIF.APPLICATION, 'CFG管理')
         self.addSubInterface(self.ServerListMirrorInterface, FIF.LIBRARY, '服务器列表管理')
+        self.addSubInterface(self.ResourceDownloadInterface, FIF.DOWNLOAD, '材质下载')
+        self.addSubInterface(self.ResourceInterface, FIF.EMOJI_TAB_SYMBOLS, '材质管理')
 
         self.addSubInterface(self.settingInterface, FIF.SETTING, '设置', NavigationItemPosition.BOTTOM)
 
     def initWindow(self):
-        self.resize(800, 600)
+        self.resize(820, 600)
         self.setWindowIcon(QIcon(base_path + '/resource/logo.svg'))
         self.setWindowTitle('DDNetToolBox')
 
