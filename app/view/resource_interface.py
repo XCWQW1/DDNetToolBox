@@ -1,3 +1,5 @@
+from functools import partial
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QTableWidgetItem, QVBoxLayout, QHeaderView, QStackedWidget, QLabel
 from qfluentwidgets import TableWidget, CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, MessageBox, Pivot, \
@@ -17,6 +19,13 @@ class ResourceInterface(QWidget):
         self.vBoxLayout = QVBoxLayout(self)
         self.vBoxLayout.addWidget(TitleLabel('材质管理', self))
 
+        self.commandBar = CommandBar(self)
+        self.commandBar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+
+        self.addButton(FluentIcon.ADD, '添加'),
+        self.addButton(FluentIcon.DELETE, '删除'),
+        self.addButton(FluentIcon.SYNC, '刷新'),
+
         self.TeedataSkinsInterface = QLabel('皮肤', self)
         self.TeedataGameSkinsInterface = QLabel('贴图', self)
         self.TeedataEmoticonsInterface = QLabel('表情', self)
@@ -34,6 +43,7 @@ class ResourceInterface(QWidget):
         self.addSubInterface(self.TeedataFontsInterface, 'TeedataFontsInterface', '字体')
 
         self.vBoxLayout.addWidget(self.pivot, 0, Qt.AlignLeft)
+        self.vBoxLayout.addWidget(self.commandBar)
         self.vBoxLayout.addWidget(self.stackedWidget)
 
         self.stackedWidget.setCurrentWidget(self.TeedataSkinsInterface)
@@ -46,3 +56,11 @@ class ResourceInterface(QWidget):
         widget.setAlignment(Qt.AlignCenter)
         self.stackedWidget.addWidget(widget)
         self.pivot.addItem(routeKey=objectName, text=text)
+
+    def addButton(self, icon, text):
+        action = Action(icon, text, self)
+        action.triggered.connect(partial(self.Button_clicked, text))
+        self.commandBar.addAction(action)
+
+    def Button_clicked(self, text):
+        pass

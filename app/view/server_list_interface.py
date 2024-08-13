@@ -112,16 +112,10 @@ class ServerListInterface(QWidget):
             save_txt = save_txt.rstrip('\n')
 
             if save_txt == "":
-                InfoBar.error(
-                    title='失败',
-                    content="列表内容为空",
-                    orient=Qt.Horizontal,
-                    isClosable=True,
-                    position=InfoBarPosition.BOTTOM_RIGHT,
-                    duration=2000,
-                    parent=self
-                )
-                return
+                w = MessageBox("警告", "列表内容为空，是否继续写入", self)
+                if not w.exec():
+                    return
+
             with open(f'{cfg.get(cfg.DDNetFolder)}/ddnet-serverlist-urls.cfg', 'w', encoding='utf-8') as f:
                 f.write(save_txt)
 

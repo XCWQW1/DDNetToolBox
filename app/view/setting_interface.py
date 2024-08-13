@@ -2,7 +2,8 @@ import os
 
 from PyQt5.QtCore import Qt, pyqtSignal
 from qfluentwidgets import (OptionsSettingCard, ScrollArea, ExpandLayout, FluentIcon, SettingCardGroup, setTheme,
-                            InfoBar, isDarkTheme, Theme, PushSettingCard, SwitchSettingCard)
+                            InfoBar, isDarkTheme, Theme, PushSettingCard, SwitchSettingCard, PrimaryPushSettingCard,
+                            CaptionLabel)
 from PyQt5.QtWidgets import QWidget, QFileDialog
 from app.config import cfg, base_path
 from app.globals import GlobalsVal
@@ -50,7 +51,19 @@ class SettingInterface(ScrollArea):
             parent=self.personalGroup
         )
 
+        self.otherGroup = SettingCardGroup(self.tr('其他'), self.scrollWidget)
+        self.checkUpdate = PrimaryPushSettingCard(
+            text="检查更新",
+            icon=FluentIcon.INFO,
+            title="关于",
+            content="当前工具箱版本：1.0.0，logo 由 燃斯(Realyn//UnU) 绘制"
+        )
+        self.checkUpdate.clicked.connect(self.__check_update)
+
         self.__initWidget()
+
+    def __check_update(self):
+        pass
 
     def __initWidget(self):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -76,9 +89,11 @@ class SettingInterface(ScrollArea):
         self.DDNetGroup.addSettingCard(self.DDNetFolder)
         self.DDNetGroup.addSettingCard(self.DDNetCheckUpdate)
         self.personalGroup.addSettingCard(self.themeCard)
+        self.otherGroup.addSettingCard(self.checkUpdate)
 
         self.expandLayout.addWidget(self.DDNetGroup)
         self.expandLayout.addWidget(self.personalGroup)
+        self.expandLayout.addWidget(self.otherGroup)
 
     def __showRestartTooltip(self):
         """ show restart tooltip """

@@ -26,7 +26,6 @@ class MainWindow(FluentWindow):
         super().__init__()
 
         file_list = cfg.get(cfg.DDNetFolder)
-        GlobalsVal.ddnet_cfg_list = [file for file in os.listdir(file_list) if file.endswith('.cfg')]
         for i in os.listdir(file_list):
             if i == "settings_ddnet.cfg":
                 with open(f'{file_list}/settings_ddnet.cfg', encoding='utf-8') as f:
