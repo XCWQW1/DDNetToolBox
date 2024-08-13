@@ -40,28 +40,10 @@ jobs:
     - name: '检查 Action'
       uses: actions/checkout@v4
 
-    - name: '安装 Wine'
-      run: |
-        dpkg --add-architecture i386
-        sudo apt update
-        sudo apt install -y wine wine32 wine64
-
-    - name: '安装 Python'
-      run: |
-        wget https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe
-        wine python-3.11.0-amd64.exe /quiet InstallAllUsers=1 PrependPath=1
-        wine python --version
-
-    - name: '使用 pip 安装依赖'
-      shell: bash
-      run: |
-        wine python -m pip install --upgrade pip
-        wine pip install -r requirements.txt
-
     - name: '构建发行'
-      shell: bash
-      run: |
-        wine python setup.py build
+      uses: JackMcKew/pyinstaller-action-windows@main
+      with:
+        path: .
 
     - name: 上传文件
       uses: actions/upload-artifact@v3
