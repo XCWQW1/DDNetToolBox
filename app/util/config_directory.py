@@ -1,18 +1,19 @@
 import os
-import platform
+import sys
+
 
 
 def get_ddnet_directory():
-    system = platform.system()
+    system = sys.platform
     directory = None
 
-    if system.startswith('CYGWIN') or system.startswith('MINGW') or system.startswith('MSYS'):
+    if system.lower().startswith('win'):
         appdata = os.getenv('APPDATA', '')
         if os.path.isdir(os.path.join(appdata, 'DDNet')):
             directory = os.path.join(appdata, "DDNet")
         else:
             directory = os.path.join(appdata, "Teeworlds")
-    elif system == 'Darwin':
+    elif system.lower().startswith('darwin'):
         if os.path.isdir(os.path.join(os.getenv('HOME'), 'Library/Application Support/DDNet')):
             directory = os.path.join(os.getenv("HOME"), "Library/Application Support/DDNet")
         else:
