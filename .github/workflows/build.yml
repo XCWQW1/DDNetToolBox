@@ -62,5 +62,5 @@ jobs:
     - name: 上传文件
       uses: actions/upload-artifact@v2
       with:
-        name: DDNetToolBox-linux
+        name: DDNetToolBox-windows
         path: dist
