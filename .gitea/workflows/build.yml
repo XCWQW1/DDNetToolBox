@@ -28,7 +28,7 @@ jobs:
         python setup.py build
 
     - name: 上传文件
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: DDNetToolBox-linux
         path: dist
@@ -42,30 +42,28 @@ jobs:
 
     - name: '安装 Wine'
       run: |
-        sudo dpkg --add-architecture i386
         sudo apt update
-        sudo apt install -y wine32 wine64
+        sudo apt install -y wine
 
     - name: '安装 Python'
       run: |
-        sudo apt install -y python3 python3-pip python3-venv
-        python3 -m venv venv
-        source venv/bin/activate
+        wget https://www.python.org/ftp/python/3.11.0/python-3.11.0-amd64.exe
+        wine python-3.11.0-amd64.exe /quiet InstallAllUsers=1 PrependPath=1
+        wine python --version
 
     - name: '使用 pip 安装依赖'
       shell: bash
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        wine python -m pip install --upgrade pip
+        wine pip install -r requirements.txt
 
     - name: '构建发行'
       shell: bash
       run: |
-        source venv/bin/activate
         wine python setup.py build
 
     - name: 上传文件
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: DDNetToolBox-windows
         path: dist
