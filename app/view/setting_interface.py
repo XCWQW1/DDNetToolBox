@@ -56,7 +56,7 @@ class SettingInterface(ScrollArea):
             text="检查更新",
             icon=FluentIcon.INFO,
             title="关于",
-            content="当前工具箱版本：1.0.0，logo 由 燃斯(Realyn//UnU) 绘制"
+            content=f"当前工具箱版本：{GlobalsVal.DDNetToolBoxVersion}，logo 由 燃斯(Realyn//UnU) 绘制"
         )
         self.checkUpdate.clicked.connect(self.__check_update)
 
