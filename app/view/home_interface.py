@@ -109,7 +109,7 @@ class TEECard(CardWidget):
 
 
 class FriendCard(CardWidget):
-    tee_image_size = 68
+    tee_image_size = 50
 
     def __init__(self, name, parent=None):
         super().__init__(parent)
