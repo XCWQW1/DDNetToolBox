@@ -42,8 +42,9 @@ jobs:
 
     - name: '安装 Wine'
       run: |
+        dpkg --add-architecture i386
         sudo apt update
-        sudo apt install -y wine
+        sudo apt install -y wine wine32 wine64
 
     - name: '安装 Python'
       run: |
