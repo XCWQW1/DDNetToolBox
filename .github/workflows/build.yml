@@ -3,21 +3,18 @@ on:
     branches:
       - main
 
-env:
-  PYTHON_VERSION: '3.11'
-
 jobs:
   build-linux:
     runs-on: ubuntu-latest
     environment: dev
     steps:
-    - name: '检查 GitHub Action'
+    - name: '检查 Action'
       uses: actions/checkout@v4
 
-    - name: 初始化 Python ${{ env.PYTHON_VERSION }} 环境
+    - name: 初始化 Python 3.11 环境
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ env.PYTHON_VERSION }}
+        python-version: 3.11
 
     - name: '使用 pip 安装依赖'
       shell: bash
@@ -37,16 +34,23 @@ jobs:
         path: dist
 
   build-windows:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     environment: dev
     steps:
-    - name: '检查 GitHub Action'
+    - name: '检查 Action'
       uses: actions/checkout@v4
 
-    - name: 初始化 Python ${{ env.PYTHON_VERSION }} 环境
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
+    - name: '安装 Wine'
+      run: |
+        sudo dpkg --add-architecture i386
+        sudo apt update
+        sudo apt install -y wine32 wine64
+
+    - name: '安装 Python'
+      run: |
+        sudo apt install -y python3 python3-pip python3-venv
+        python3 -m venv venv
+        source venv/bin/activate
 
     - name: '使用 pip 安装依赖'
       shell: bash
@@ -57,7 +61,8 @@ jobs:
     - name: '构建发行'
       shell: bash
       run: |
-        python setup.py build
+        source venv/bin/activate
+        wine python setup.py build
 
     - name: 上传文件
       uses: actions/upload-artifact@v2
