@@ -92,6 +92,17 @@ class MainWindow(FluentWindow):
 
 
 if __name__ == '__main__':
+    # 启用DPI
+    if cfg.get(cfg.dpiScale) == "Auto":
+        QApplication.setHighDpiScaleFactorRoundingPolicy(
+            Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+        QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    else:
+        os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"
+        os.environ["QT_SCALE_FACTOR"] = str(cfg.get(cfg.dpiScale))
+
+    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
+
     app = QApplication(sys.argv)
     translator = FluentTranslator(QLocale(QLocale.Chinese, QLocale.China))
     app.installTranslator(translator)

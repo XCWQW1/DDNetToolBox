@@ -51,6 +51,18 @@ class SettingInterface(ScrollArea):
             parent=self.personalGroup
         )
 
+        self.zoomCard = OptionsSettingCard(
+            cfg.dpiScale,
+            FluentIcon.ZOOM,
+            self.tr("缩放大小"),
+            self.tr("更改小部件和字体的大小"),
+            texts=[
+                "100%", "125%", "150%", "175%", "200%",
+                self.tr("跟随系统默认")
+            ],
+            parent=self.personalGroup
+        )
+
         self.otherGroup = SettingCardGroup(self.tr('其他'), self.scrollWidget)
         self.checkUpdate = PrimaryPushSettingCard(
             text="检查更新",
@@ -89,6 +101,7 @@ class SettingInterface(ScrollArea):
         self.DDNetGroup.addSettingCard(self.DDNetFolder)
         self.DDNetGroup.addSettingCard(self.DDNetCheckUpdate)
         self.personalGroup.addSettingCard(self.themeCard)
+        self.personalGroup.addSettingCard(self.zoomCard)
         self.otherGroup.addSettingCard(self.checkUpdate)
 
         self.expandLayout.addWidget(self.DDNetGroup)
@@ -97,10 +110,11 @@ class SettingInterface(ScrollArea):
 
     def __showRestartTooltip(self):
         """ show restart tooltip """
-        InfoBar.warning(
-            '',
-            self.tr('Configuration takes effect after restart'),
-            parent=self.window()
+        InfoBar.success(
+            self.tr('成功'),
+            self.tr('重启以应用更改'),
+            duration=1500,
+            parent=self
         )
 
     def __onThemeChanged(self, theme: Theme):

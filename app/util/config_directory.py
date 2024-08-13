@@ -2,7 +2,6 @@ import os
 import sys
 
 
-
 def get_ddnet_directory():
     system = sys.platform
     directory = None

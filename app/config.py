@@ -9,8 +9,10 @@ base_path = os.path.dirname(__file__)
 
 
 class Config(QConfig):
-    themeMode = OptionsConfigItem("QFluentWidgets", "ThemeMode", Theme.AUTO, OptionsValidator(Theme),
+    themeMode = OptionsConfigItem("MainWindow", "ThemeMode", Theme.AUTO, OptionsValidator(Theme),
                                   EnumSerializer(Theme))
+    dpiScale = OptionsConfigItem(
+        "MainWindow", "DpiScale", "Auto", OptionsValidator([1, 1.25, 1.5, 1.75, 2, "Auto"]), restart=True)
     DDNetFolder = ConfigItem("DDNet", "DDNetFolder", get_ddnet_directory(), FolderValidator())
     DDNetCheckUpdate = ConfigItem("DDNet", "DDNetCheckUpdate", True, BoolValidator())
 
