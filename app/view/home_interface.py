@@ -5,7 +5,7 @@ from PyQt5.QtGui import QPixmap
 from app.globals import GlobalsVal
 from app.config import cfg, base_path
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QEasingCurve
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy, QScrollArea
 from qfluentwidgets import ImageLabel, CardWidget, SubtitleLabel, BodyLabel, HeaderCardWidget, IconWidget, InfoBarIcon, \
     HyperlinkLabel, InfoBar, InfoBarPosition, CaptionLabel, FlowLayout, SingleDirectionScrollArea, InfoBadge, \
     InfoBadgePosition, setFont
@@ -140,7 +140,9 @@ class FriendList(HeaderCardWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setTitle('好友列表')
-        self.fBoxLayout = FlowLayout()
+
+        self.containerWidget = QWidget()
+        self.fBoxLayout = FlowLayout(self.containerWidget)
 
         try:
             for i in GlobalsVal.ddnet_setting_config['add_friend']:
@@ -153,7 +155,13 @@ class FriendList(HeaderCardWidget):
             self.hBoxLayout.addWidget(self.label, 1, Qt.AlignCenter)
             self.viewLayout.addLayout(self.hBoxLayout)
 
-        self.viewLayout.addLayout(self.fBoxLayout)
+        self.scrollArea = SingleDirectionScrollArea()
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setWidget(self.containerWidget)
+        self.scrollArea.enableTransparentBackground()
+
+        self.viewLayout.addWidget(self.scrollArea)
+        self.viewLayout.setContentsMargins(11, 11, 11, 11)
 
 
 class HomeInterface(QWidget):

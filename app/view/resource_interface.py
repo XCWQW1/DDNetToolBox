@@ -32,7 +32,6 @@ class ResourceInterface(QWidget):
         self.TeedataCursorsInterface = QLabel('光标', self)
         self.TeedataParticlesInterface = QLabel('粒子', self)
         self.TeedataEntitiesInterface = QLabel('实体层', self)
-        self.TeedataFontsInterface = QLabel('字体', self)
 
         self.addSubInterface(self.TeedataSkinsInterface, 'TeedataSkinsInterface', '皮肤')
         self.addSubInterface(self.TeedataGameSkinsInterface, 'TeedataGameSkinsInterface', '贴图')
@@ -40,7 +39,6 @@ class ResourceInterface(QWidget):
         self.addSubInterface(self.TeedataCursorsInterface, 'TeedataCursorsInterface', '光标')
         self.addSubInterface(self.TeedataParticlesInterface, 'TeedataParticlesInterface', '粒子')
         self.addSubInterface(self.TeedataEntitiesInterface, 'TeedataEntitiesInterface', '实体层')
-        self.addSubInterface(self.TeedataFontsInterface, 'TeedataFontsInterface', '字体')
 
         self.vBoxLayout.addWidget(self.pivot, 0, Qt.AlignLeft)
         self.vBoxLayout.addWidget(self.commandBar)
