@@ -1,3 +1,7 @@
+from PyQt5.QtCore import pyqtSignal, QObject
+from qfluentwidgets import Theme
+
+
 class GlobalsVal:
     ddnet_setting_config = {}
     ddnet_info = None

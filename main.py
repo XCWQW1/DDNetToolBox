@@ -3,11 +3,11 @@ import os
 import re
 import sys
 
-from PyQt5.QtCore import Qt, QLocale
+from PyQt5.QtCore import Qt, QLocale, pyqtSignal
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QFrame, QHBoxLayout
 from qfluentwidgets import (NavigationItemPosition, setFont, SubtitleLabel, FluentWindow,
-                            FluentTranslator)
+                            FluentTranslator, qconfig, Theme)
 from qfluentwidgets import FluentIcon as FIF
 
 from app.config import cfg, base_path
@@ -22,6 +22,7 @@ from app.view.server_list_interface import ServerListInterface
 
 class MainWindow(FluentWindow):
     """ 主界面 """
+    themeChane = pyqtSignal(Theme)
     def __init__(self):
         super().__init__()
 
@@ -63,10 +64,12 @@ class MainWindow(FluentWindow):
         self.ResourceDownloadInterface = ResourceDownloadInterface()
         self.ServerListMirrorInterface = ServerListInterface()
 
-        self.settingInterface = SettingInterface()
+        self.settingInterface = SettingInterface(self.themeChane)
 
         self.initNavigation()
         self.initWindow()
+
+        self.themeChane.connect(self.__theme_change)
 
     @staticmethod
     def remove_quotes(text):
@@ -87,8 +90,14 @@ class MainWindow(FluentWindow):
 
     def initWindow(self):
         self.resize(820, 600)
-        self.setWindowIcon(QIcon(base_path + '/resource/logo.svg'))
+        theme = cfg.get(cfg.themeMode)
+        theme = qconfig.theme if theme == Theme.AUTO else theme
+        self.setWindowIcon(QIcon(base_path + f'/resource/{theme.value.lower()}/logo.svg'))
         self.setWindowTitle('DDNetToolBox')
+
+    def __theme_change(self, theme: Theme):
+        theme = qconfig.theme if theme == Theme.AUTO else theme
+        self.setWindowIcon(QIcon(base_path + f'/resource/{theme.value.lower()}/logo.svg'))
 
 
 if __name__ == '__main__':
