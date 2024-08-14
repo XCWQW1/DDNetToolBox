@@ -20,7 +20,8 @@ for item in files_and_folders:
 pyinstaller_command = [
     '--onefile',
     '--windowed',
-    '--name=DDNetToolBox',
+    '--name=DDNetToolBox'
+    '-i=app/resource/logo.ico',
     '--clean',
     f'--runtime-tmpdir=app/temp',
 ]
