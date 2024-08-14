@@ -5,3 +5,4 @@ PyQt5-Qt5
 PyQt5_sip
 requests
 pyinstaller
+Pillow
