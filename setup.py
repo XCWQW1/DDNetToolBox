@@ -23,7 +23,7 @@ pyinstaller_command = [
     '--name=DDNetToolBox',
     '--clean',
     '--runtime-tmpdir=app/temp'
-    '--icon=icon.ico',
+    '--icon=logo.ico',
 ]
 
 for data in datas:
