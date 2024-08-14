@@ -222,7 +222,7 @@ class CFGInterface(QWidget):
 
             InfoBar.success(
                 title='成功',
-                content="已重新加载本地内容",
+                content="已重新加载本地资源",
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
