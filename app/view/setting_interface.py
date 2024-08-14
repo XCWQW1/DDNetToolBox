@@ -1,9 +1,10 @@
 import os
 
 from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QIcon
 from qfluentwidgets import (OptionsSettingCard, ScrollArea, ExpandLayout, FluentIcon, SettingCardGroup, setTheme,
                             InfoBar, isDarkTheme, Theme, PushSettingCard, SwitchSettingCard, PrimaryPushSettingCard,
-                            CaptionLabel)
+                            CaptionLabel, qconfig)
 from PyQt5.QtWidgets import QWidget, QFileDialog
 from app.config import cfg, base_path
 from app.globals import GlobalsVal
@@ -14,8 +15,10 @@ class SettingInterface(ScrollArea):
 
     ddnetFolderChanged = pyqtSignal(list)
 
-    def __init__(self, parent=None):
+    def __init__(self, themeChane, parent=None):
         super().__init__(parent=parent)
+        self.themeChane = themeChane
+
         self.scrollWidget = QWidget()
         self.expandLayout = ExpandLayout(self.scrollWidget)
 
@@ -119,6 +122,7 @@ class SettingInterface(ScrollArea):
 
     def __onThemeChanged(self, theme: Theme):
         """ theme changed slot """
+        self.themeChane.emit(theme)
         setTheme(theme)
         self.__setQss()
 
