@@ -1,9 +1,9 @@
 # coding:utf-8
 import os
 
-from qfluentwidgets import (qconfig, QConfig, ConfigItem, FolderListValidator, Theme, OptionsConfigItem,
+from qfluentwidgets import (qconfig, QConfig, ConfigItem, Theme, OptionsConfigItem,
                             OptionsValidator, EnumSerializer, FolderValidator, BoolValidator)
-from app.util.config_directory import get_ddnet_directory
+from app.utils.config_directory import get_ddnet_directory
 
 base_path = os.path.dirname(__file__)
 

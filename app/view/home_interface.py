@@ -4,27 +4,11 @@ import requests
 from PyQt5.QtGui import QPixmap
 from app.globals import GlobalsVal
 from app.config import cfg, base_path
-from PyQt5.QtCore import Qt, QThread, pyqtSignal, QEasingCurve
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy, QScrollArea
-from qfluentwidgets import ImageLabel, CardWidget, SubtitleLabel, BodyLabel, HeaderCardWidget, IconWidget, InfoBarIcon, \
-    HyperlinkLabel, InfoBar, InfoBarPosition, CaptionLabel, FlowLayout, SingleDirectionScrollArea, InfoBadge, \
-    InfoBadgePosition, setFont
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
+from qfluentwidgets import ImageLabel, CardWidget, SubtitleLabel, BodyLabel, HeaderCardWidget, InfoBar, InfoBarPosition, CaptionLabel, FlowLayout, SingleDirectionScrollArea, setFont
 
-
-class ImageLoader(QThread):
-    finished = pyqtSignal(QPixmap)
-
-    def __init__(self, url):
-        super().__init__()
-        self.url = url
-
-    def run(self):
-        response = requests.get(url=self.url)
-        image_data = response.content
-
-        pixmap = QPixmap()
-        pixmap.loadFromData(image_data)
-        self.finished.emit(pixmap)
+from app.utils.network import ImageLoader
 
 
 class TEEDataLoader(QThread):
@@ -35,8 +19,11 @@ class TEEDataLoader(QThread):
         self.name = name
 
     def run(self):
-        response = requests.get('https://ddnet.org/players/?json2={}'.format(self.name))
-        self.finished.emit(response.json())
+        try:
+            response = requests.get('https://ddnet.org/players/?json2={}'.format(self.name))
+            self.finished.emit(response.json())
+        except:
+            self.finished.emit({})
 
 
 class CheckUpdate(QThread):
@@ -49,8 +36,11 @@ class CheckUpdate(QThread):
         if GlobalsVal.ddnet_info is None:
             self.finished.emit({})
             return
-        response = requests.get("https://update.ddnet.org/update.json").json()
-        self.finished.emit(response)
+        try:
+            response = requests.get("https://update.ddnet.org/update.json").json()
+            self.finished.emit(response)
+        except:
+            self.finished.emit({})
 
 
 class TEECard(CardWidget):
@@ -97,6 +87,13 @@ class TEECard(CardWidget):
         self.iconWidget.scaledToHeight(120)
 
     def on_data_loaded(self, json_data: dict):
+        if json_data == {}:
+            self.labels[1].setText(f'全球排名：NO.数据获取失败\n'
+                                   f'游戏分数：数据获取失败/数据获取失败 分\n'
+                                   f'游玩时长：数据获取失败 小时\n'
+                                   f'最后完成：数据获取失败\n'
+                                   f'入坑时间：数据获取失败')
+            return
         use_time = 0
         for time in json_data['activity']:
             use_time = use_time + time['hours_played']
@@ -154,6 +151,7 @@ class FriendList(HeaderCardWidget):
             setFont(self.label, 24)
             self.hBoxLayout.addWidget(self.label, 1, Qt.AlignCenter)
             self.viewLayout.addLayout(self.hBoxLayout)
+            return
 
         self.scrollArea = SingleDirectionScrollArea()
         self.scrollArea.setWidgetResizable(True)
@@ -188,6 +186,15 @@ class HomeInterface(QWidget):
 
     def on_check_update_loaded(self, json_data: list):
         if json_data == {}:
+            InfoBar.warning(
+                title='DDNet 版本检测',
+                content="无法连接到DDNet官网",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.BOTTOM_RIGHT,
+                duration=-1,
+                parent=self
+            )
             return
         if GlobalsVal.ddnet_info['version'] != json_data[0]["version"]:
             InfoBar.warning(

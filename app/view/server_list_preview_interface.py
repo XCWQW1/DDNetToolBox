@@ -1,17 +1,17 @@
 from functools import partial
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QTableWidgetItem, QVBoxLayout, QHeaderView, QLabel
+from PyQt5.QtWidgets import QWidget, QTableWidgetItem, QVBoxLayout, QHeaderView
 from qfluentwidgets import TableWidget, CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, MessageBox, TitleLabel
 
 from app.config import cfg
 from app.globals import GlobalsVal
 
 
-class ServerListInterface(QWidget):
+class ServerListPreviewInterface(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.setObjectName("ServerListInterface")
+        self.setObjectName("ServerListPreviewInterface")
 
         self.vBoxLayout = QVBoxLayout(self)
         self.vBoxLayout.addWidget(TitleLabel('服务器列表管理', self))
