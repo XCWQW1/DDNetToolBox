@@ -59,6 +59,8 @@ class MainWindow(FluentWindow):
                 GlobalsVal.server_list_file = True
 
         if not os.path.exists(f"{os.getcwd()}/app/config"):
+            if not "player_name" in GlobalsVal.ddnet_setting_config:
+                return
             if GlobalsVal.ddnet_setting_config["player_name"] == "Realyn//UnU":
                 cfg.set(cfg.themeColor, QColor("#af251a"))
 
