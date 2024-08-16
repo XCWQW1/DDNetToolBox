@@ -58,8 +58,15 @@ jobs:
     - name: '检查 tag'
       shell: pwsh
       run: |
-        git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-        $tag_name = "${GITHUB_REF}".Split('/')[-1]
+        if (-not $env:GITHUB_REF) {
+          Write-Error "GITHUB_REF is not set."
+          exit 1
+        }
+        $tag_name = $env:GITHUB_REF.Split('/')[-1]
+        if (-not $tag_name) {
+          Write-Error "Tag name could not be extracted."
+          exit 1
+        }
         Write-Output "Tag $tag_name"
         git checkout $tag_name
         echo "TAG_NAME=$tag_name" >> $env:GITHUB_ENV
