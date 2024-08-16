@@ -1,35 +1,162 @@
 import os
+import shutil
+import threading
 from functools import partial
 
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QFontMetrics
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QStackedWidget, QLabel
-from qfluentwidgets import CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, Pivot, \
-    TitleLabel, CardWidget, ImageLabel, CaptionLabel, FlowLayout, SingleDirectionScrollArea
+from PyQt5.QtCore import Qt, pyqtSignal, QThread, QTimer
+from PyQt5.QtGui import QFontMetrics, QPainter, QBrush, QPainterPath
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QStackedWidget, QLabel, QFileDialog, QPushButton
+from qfluentwidgets import CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, Pivot, TitleLabel, CardWidget, \
+    ImageLabel, CaptionLabel, FlowLayout, SingleDirectionScrollArea, MessageBoxBase, SubtitleLabel, MessageBox, \
+    RadioButton, TogglePushButton, ToolTipFilter, ToolTipPosition, PrimaryPushButton
 
 from app.config import cfg
 from app.utils.draw_tee import draw_tee
 
 
+select_list = {
+    "skins": {},
+    "game": {},
+    "emoticons": {},
+    "cursor": {},
+    "particles": {},
+    "entities": {}
+}
+button_select = None
+
+
+class FileSelectMessageBox(MessageBoxBase):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.selected_files = None
+        self.titleLabel = SubtitleLabel('选择文件')
+        self.label = QLabel("拖拽文件到此处或点击选择文件", self)
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setStyleSheet("QLabel { border: 2px dashed #aaa; }")
+
+        self.setAcceptDrops(True)
+
+        self.viewLayout.addWidget(self.titleLabel)
+        self.viewLayout.addWidget(self.label)
+
+        self.label.setMinimumWidth(300)
+        self.label.setMinimumHeight(100)
+
+        self.label.mousePressEvent = self.select_file
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        files = []
+        for url in event.mimeData().urls():
+            files.append(url.toLocalFile())
+
+        self.selected_files = files
+        self.label.setText("\n".join(files))
+
+    def select_file(self, event):
+        options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
+        files, _ = QFileDialog.getOpenFileNames(self, "选择文件", "", "All Files (*)",
+                                                options=options)
+
+        if files:
+            self.selected_files = files
+            self.label.setText("\n".join(files))
+
+    def get_selected_files(self):
+        return self.selected_files
+
+
 class ResourceCard(CardWidget):
+    selected = False
+
     def __init__(self, file, card_type, parent=None):
         super().__init__(parent)
+        global button_select
 
+        self.card_type = card_type
+        self.file = file
         self.setFixedSize(135, 120)
 
-        if card_type == "skins":
-            self.iconWidget = ImageLabel(draw_tee(file), self)
-            self.iconWidget.scaledToHeight(128)
+        if self.card_type == "skins":
+            self.iconWidget = ImageLabel(draw_tee(self.file), self)
+            self.iconWidget.scaledToHeight(110)
         else:
-            self.iconWidget = ImageLabel(file, self)
-            self.iconWidget.scaledToHeight(68)
+            self.iconWidget = ImageLabel(self.file, self)
+            if self.card_type == "entities":
+                self.iconWidget.scaledToHeight(100)
+            else:
+                self.iconWidget.scaledToHeight(60)
 
         self.label = CaptionLabel(self)
-        self.label.setText(self.get_elided_text(self.label, os.path.basename(file)[:-4]))
+        self.label.setText(self.get_elided_text(self.label, os.path.basename(self.file)[:-4]))
+        self.label.setToolTip(os.path.basename(self.file)[:-4])
+        self.label.setToolTipDuration(1000)
+        self.label.installEventFilter(ToolTipFilter(self.label, showDelay=300, position=ToolTipPosition.BOTTOM))
 
-        self.hBoxLayout = QVBoxLayout(self)
-        self.hBoxLayout.addWidget(self.iconWidget, Qt.AlignCenter | Qt.AlignTop)
-        self.hBoxLayout.addWidget(self.label, 0, Qt.AlignCenter)
+        self.vBoxLayout = QVBoxLayout(self)
+        self.vBoxLayout.addWidget(self.iconWidget, 0, Qt.AlignCenter)
+
+        if self.card_type == "cursor":
+            self.button = TogglePushButton("启用", self)
+            self.button.clicked.connect(self.__button_clicked)
+            self.vBoxLayout.addWidget(self.button, 0, Qt.AlignCenter)
+
+            self.select_cursor = cfg.get(cfg.DDNetAssetsCursor)
+            if self.select_cursor is not None:
+                if file == self.select_cursor:
+                    self.button.setText('禁用')
+                    button_select = self.button
+
+        self.vBoxLayout.addWidget(self.label, 0, Qt.AlignCenter)
+
+        self.clicked.connect(self.__on_clicked)
+
+    def __button_clicked(self, checked):  # gui_cursor.png
+        global button_select
+        if button_select is not None and button_select != self.button:
+            button_select.setChecked(False)
+            button_select.setText('启用')
+
+        ddnet_folder = cfg.get(cfg.DDNetFolder)
+
+        if checked:
+            self.button.setText('禁用')
+            button_select = self.button
+            cfg.set(cfg.DDNetCheckUpdate, self.file)
+
+            shutil.copy(self.file, f"{ddnet_folder}/gui_cursor.png")
+        else:
+            self.button.setText('启用')
+            os.remove(f"{ddnet_folder}/gui_cursor.png")
+
+    def __on_clicked(self):
+        self.set_selected(not self.selected)
+
+    def set_selected(self, selected):
+        self.selected = selected
+        if self.selected:
+            select_list[self.card_type][self.file] = self
+        else:
+            del select_list[self.card_type][self.file]
+        self.update()
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        if self.selected:
+            painter = QPainter(self)
+            painter.setRenderHint(QPainter.Antialiasing)
+
+            rect = self.rect()
+            path = QPainterPath()
+            path.addRoundedRect(rect.x(), rect.y(), rect.width(), rect.height(), 5, 5)
+
+            painter.setBrush(QBrush(cfg.get(cfg.themeColor)))
+            painter.setPen(Qt.NoPen)
+            painter.drawPath(path)
 
     def get_elided_text(self, label, text):
         # 省略文本
@@ -42,7 +169,6 @@ class ResourceCard(CardWidget):
 
 class ResourceList(SingleDirectionScrollArea):
     refresh_resource = pyqtSignal()
-    card_list = []
 
     def __init__(self, list_type, parent=None):
         super().__init__(parent)
@@ -67,21 +193,34 @@ class ResourceList(SingleDirectionScrollArea):
         self.enableTransparentBackground()
         self.setWidget(self.containerWidget)
 
-        for i in os.listdir(self.file_path):
-            card = ResourceCard(f"{self.file_path}/{i}", self.list_type)
-            self.card_list.append(card)
-            self.fBoxLayout.addWidget(card)
+        self.file_list = os.listdir(self.file_path)
+        self.batch_size = 1
+        self.current_index = 0
+
+        QTimer.singleShot(0, self.load_next_batch)
 
         self.refresh_resource.connect(self.__refresh)
 
-    def __refresh(self):
-        for i in self.card_list:
-            self.fBoxLayout.removeWidget(i)
+    def load_next_batch(self):
+        end_index = min(self.current_index + self.batch_size, len(self.file_list))
+        for i in range(self.current_index, end_index):
+            self.fBoxLayout.addWidget(ResourceCard(f"{self.file_path}/{self.file_list[i]}", self.list_type))
+        self.current_index = end_index
 
-        for i in os.listdir(self.file_path):
-            card = ResourceCard(f"{self.file_path}/{i}", self.list_type)
-            self.card_list.append(card)
-            self.fBoxLayout.addWidget(card)
+        if self.current_index < len(self.file_list):
+            QTimer.singleShot(0, self.load_next_batch)
+
+    def __refresh(self):
+        for i in reversed(range(self.fBoxLayout.count())):
+            widget = self.fBoxLayout.itemAt(i).widget()
+            if widget:
+                self.fBoxLayout.removeWidget(widget)
+                widget.deleteLater()
+
+        self.file_list = os.listdir(self.file_path)
+        self.current_index = 0
+
+        QTimer.singleShot(0, self.load_next_batch)
 
 
 class ResourceInterface(QWidget):
@@ -104,7 +243,7 @@ class ResourceInterface(QWidget):
         self.TeedataSkinsInterface = ResourceList('skins', self)
         self.TeedataGameSkinsInterface = ResourceList('game', self)
         self.TeedataEmoticonsInterface = ResourceList('emoticons', self)
-        self.TeedataCursorsInterface = ResourceList('cursor', self)  # gui_cursor.png
+        self.TeedataCursorsInterface = ResourceList('cursor', self)
         self.TeedataParticlesInterface = ResourceList('particles', self)
         self.TeedataEntitiesInterface = ResourceList('entities', self)
 
@@ -126,7 +265,6 @@ class ResourceInterface(QWidget):
 
     def addSubInterface(self, widget: QLabel, objectName, text):
         widget.setObjectName(objectName)
-        # widget.setAlignment(Qt.AlignCenter)
         self.stackedWidget.addWidget(widget)
         self.pivot.addItem(routeKey=objectName, text=text)
 
@@ -136,13 +274,101 @@ class ResourceInterface(QWidget):
         self.commandBar.addAction(action)
 
     def Button_clicked(self, text):
-        if text == "刷新":
-            self.TeedataSkinsInterface.refresh_resource.emit()
-            self.TeedataGameSkinsInterface.refresh_resource.emit()
-            self.TeedataEmoticonsInterface.refresh_resource.emit()
-            self.TeedataCursorsInterface.refresh_resource.emit()
-            self.TeedataParticlesInterface.refresh_resource.emit()
-            self.TeedataEntitiesInterface.refresh_resource.emit()
+        global button_select
+        current_item = self.pivot.currentItem().text()
+
+        if text == "添加":
+            w = FileSelectMessageBox(self)
+            if w.exec():
+                files = w.get_selected_files()
+                if files is None:
+                    InfoBar.error(
+                        title='错误',
+                        content="您没有选择任何文件",
+                        orient=Qt.Horizontal,
+                        isClosable=True,
+                        position=InfoBarPosition.BOTTOM_RIGHT,
+                        duration=2000,
+                        parent=self
+                    )
+                else:
+                    errors = 0
+                    cover = 0
+                    for i in files:
+                        if i.split("/")[-1] in [file for file in os.listdir(self.get_resource_url(current_item))]:
+                            cover += 1
+
+                        try:
+                            shutil.copy(i, self.get_resource_url(current_item))
+                        except Exception as e:
+                            InfoBar.error(
+                                title='错误',
+                                content=f"文件 {i} 复制失败\n原因：{e}",
+                                orient=Qt.Horizontal,
+                                isClosable=True,
+                                position=InfoBarPosition.BOTTOM_RIGHT,
+                                duration=-1,
+                                parent=self
+                            )
+                            errors += 1
+
+                    InfoBar.success(
+                        title='成功',
+                        content=f"文件复制已完成\n共复制了 {len(files)} 个文件，{cover} 个文件被覆盖，{errors} 个文件失败",
+                        orient=Qt.Horizontal,
+                        isClosable=True,
+                        position=InfoBarPosition.BOTTOM_RIGHT,
+                        duration=2000,
+                        parent=self
+                    )
+                    self.Button_clicked("刷新")
+
+        elif text == "删除":
+            selected_items = select_list[self.get_resource_pivot_type(current_item)]
+            if not selected_items:
+                InfoBar.warning(
+                    title='警告',
+                    content="您没有选择任何东西",
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.BOTTOM_RIGHT,
+                    duration=2000,
+                    parent=self
+                )
+                return
+
+            delete_file = ""
+            for i in selected_items:
+                delete_file += f"{i}\n"
+
+            w = MessageBox("警告", f"此操作将会从磁盘中永久删除下列文件，不可恢复：\n{delete_file}", self)
+            delete = 0
+            if w.exec():
+                for i in selected_items:
+                    try:
+                        os.remove(i)
+                        delete += 1
+                    except:
+                        pass
+
+                select_list[self.get_resource_pivot_type(current_item)] = {}
+
+                InfoBar.warning(
+                    title='成功',
+                    content=f"共删除 {delete} 个文件，{len(selected_items) - delete} 个文件删除失败",
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.BOTTOM_RIGHT,
+                    duration=2000,
+                    parent=self
+                )
+
+                self.Button_clicked("刷新")
+
+        elif text == "刷新":
+            button_select = None
+            self.get_resource_pivot(current_item).refresh_resource.emit()
+            select_list[self.get_resource_pivot_type(current_item)] = {}
 
             InfoBar.success(
                 title='成功',
@@ -153,3 +379,62 @@ class ResourceInterface(QWidget):
                 duration=2000,
                 parent=self
             )
+
+    def get_resource_pivot(self, text):
+        if text == "皮肤":
+            return self.TeedataSkinsInterface
+        elif text == "贴图":
+            return self.TeedataGameSkinsInterface
+        elif text == "表情":
+            return self.TeedataEmoticonsInterface
+        elif text == "光标":
+            return self.TeedataCursorsInterface
+        elif text == "粒子":
+            return self.TeedataParticlesInterface
+        elif text == "实体层":
+            return self.TeedataEntitiesInterface
+
+    @staticmethod
+    def get_resource_pivot_type(text):
+        if text == "皮肤":
+            text = "skins"
+        elif text == "贴图":
+            text = "game"
+        elif text == "表情":
+            text = "emoticons"
+        elif text == "光标":
+            text = "cursor"
+        elif text == "粒子":
+            text = "particles"
+        elif text == "实体层":
+            text = "entities"
+
+        return text
+
+    @staticmethod
+    def get_resource_url(text):
+        if text == "皮肤":
+            text = "skins"
+        elif text == "贴图":
+            text = "game"
+        elif text == "表情":
+            text = "emoticons"
+        elif text == "光标":
+            text = "cursor"
+        elif text == "粒子":
+            text = "particles"
+        elif text == "实体层":
+            text = "entities"
+
+        if text == "cursor" and not os.path.exists(f"{os.getcwd()}/app/ddnet_assets/cursor"):
+            os.mkdir(f"{os.getcwd()}/app/ddnet_assets")
+            os.mkdir(f"{os.getcwd()}/app/ddnet_assets/cursor")
+
+        if text == "skins":
+            file_path = f"{cfg.get(cfg.DDNetFolder)}/{text}"
+        elif text == "cursor":
+            file_path = f"{os.getcwd()}/app/ddnet_assets/cursor"
+        else:
+            file_path = f"{cfg.get(cfg.DDNetFolder)}/assets/{text}"
+
+        return file_path

@@ -104,7 +104,7 @@ def draw_tee(file: str) -> QImage:
     processed_images = crop_and_generate_image(image)
 
     final_image = Image.new('RGBA', (96, 96), )
-    final_image.paste(processed_images['default'], (-3, 0))
+    final_image.paste(processed_images['default'], (0, 0))
 
     byte_io = io.BytesIO()
     final_image.save(byte_io, format='PNG')

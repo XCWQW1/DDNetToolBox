@@ -27,11 +27,9 @@ class CFGSelectMessageBox(MessageBoxBase):
         self.viewLayout.addWidget(self.titleLabel)
         self.viewLayout.addWidget(self.label)
 
-        # 设置对话框的最小宽度
         self.label.setMinimumWidth(300)
         self.label.setMinimumHeight(100)
 
-        # 连接点击事件
         self.label.mousePressEvent = self.select_file
 
     def dragEnterEvent(self, event):
@@ -136,13 +134,13 @@ class CFGInterface(QWidget):
                         try:
                             shutil.copy(i, cfg.get(cfg.DDNetFolder))
                         except Exception as e:
-                            InfoBar.warning(
-                                title='警告',
+                            InfoBar.error(
+                                title='错误',
                                 content=f"文件 {i} 复制失败\n原因：{e}",
                                 orient=Qt.Horizontal,
                                 isClosable=True,
                                 position=InfoBarPosition.BOTTOM_RIGHT,
-                                duration=2000,
+                                duration=-1,
                                 parent=self
                             )
                             errors += 1

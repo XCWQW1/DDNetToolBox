@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QIcon
 from qfluentwidgets import (OptionsSettingCard, ScrollArea, ExpandLayout, FluentIcon, SettingCardGroup, setTheme,
                             InfoBar, isDarkTheme, Theme, PushSettingCard, SwitchSettingCard, PrimaryPushSettingCard,
-                            CaptionLabel, qconfig)
+                            CaptionLabel, qconfig, CustomColorSettingCard, setThemeColor)
 from PyQt5.QtWidgets import QWidget, QFileDialog
 from app.config import cfg, base_path
 from app.globals import GlobalsVal
@@ -52,6 +52,14 @@ class SettingInterface(ScrollArea):
                 self.tr('跟随系统设置')
             ],
             parent=self.personalGroup
+        )
+
+        self.themeColorCard = CustomColorSettingCard(
+            cfg.themeColor,
+            FluentIcon.PALETTE,
+            self.tr('主题颜色'),
+            self.tr('更改应用程序的主题颜色'),
+            self.personalGroup
         )
 
         self.zoomCard = OptionsSettingCard(
@@ -104,6 +112,7 @@ class SettingInterface(ScrollArea):
         self.DDNetGroup.addSettingCard(self.DDNetFolder)
         self.DDNetGroup.addSettingCard(self.DDNetCheckUpdate)
         self.personalGroup.addSettingCard(self.themeCard)
+        self.personalGroup.addSettingCard(self.themeColorCard)
         self.personalGroup.addSettingCard(self.zoomCard)
         self.otherGroup.addSettingCard(self.checkUpdate)
 
@@ -153,3 +162,4 @@ class SettingInterface(ScrollArea):
         self.DDNetFolder.clicked.connect(self.__onDDNetFolderCardClicked)
         self.DDNetFolder.clicked.connect(self.__onDDNetFolderChanged)
         self.themeCard.optionChanged.connect(lambda ci: setTheme(cfg.get(ci)))
+        self.themeColorCard.colorChanged.connect(setThemeColor)
