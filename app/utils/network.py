@@ -11,9 +11,28 @@ class ImageLoader(QThread):
         self.url = url
 
     def run(self):
-        response = requests.get(url=self.url)
-        image_data = response.content
+        try:
+            response = requests.get(url=self.url)
+            image_data = response.content
 
-        pixmap = QPixmap()
-        pixmap.loadFromData(image_data)
+            pixmap = QPixmap()
+            pixmap.loadFromData(image_data)
+        except:
+            pixmap = QPixmap()
         self.finished.emit(pixmap)
+
+
+class JsonLoader(QThread):
+    finished = pyqtSignal(dict)
+
+    def __init__(self, url):
+        super().__init__()
+        self.url = url
+
+    def run(self):
+        try:
+            response = requests.get(url=self.url).json()
+        except:
+            response = {}
+
+        self.finished.emit(response)

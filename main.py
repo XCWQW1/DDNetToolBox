@@ -4,10 +4,10 @@ import re
 import sys
 
 from PyQt5.QtCore import Qt, QLocale, pyqtSignal
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtWidgets import QApplication
 from qfluentwidgets import (NavigationItemPosition, FluentWindow,
-                            FluentTranslator, qconfig, Theme)
+                            FluentTranslator, qconfig, Theme, setThemeColor)
 from qfluentwidgets import FluentIcon as FIF
 
 from app.config import cfg, base_path
@@ -58,11 +58,15 @@ class MainWindow(FluentWindow):
             if i == "ddnet-serverlist-urls.cfg":
                 GlobalsVal.server_list_file = True
 
+        if not os.path.exists(f"{os.getcwd()}/app/config"):
+            if GlobalsVal.ddnet_setting_config["player_name"] == "Realyn//UnU":
+                cfg.set(cfg.themeColor, QColor("#af251a"))
+
         # 创建子界面
         self.homeInterface = HomeInterface(self)
         self.CFGInterface = CFGInterface()
         self.ResourceInterface = ResourceInterface()
-        self.ResourceDownloadInterface = ResourceDownloadInterface()
+        # self.ResourceDownloadInterface = ResourceDownloadInterface()
         self.ServerListMirrorInterface = ServerListInterface()
         self.ServerListPreviewInterface = ServerListPreviewInterface()
 
@@ -87,7 +91,7 @@ class MainWindow(FluentWindow):
         self.addSubInterface(self.ResourceInterface, FIF.EMOJI_TAB_SYMBOLS, '材质管理')
         self.addSubInterface(self.ServerListMirrorInterface, FIF.LIBRARY, '服务器列表管理')
         # self.addSubInterface(self.ServerListPreviewInterface, FIF.LIBRARY, '服务器列表预览')
-        self.addSubInterface(self.ResourceDownloadInterface, FIF.DOWNLOAD, '材质下载')
+        # self.addSubInterface(self.ResourceDownloadInterface, FIF.DOWNLOAD, '材质下载')
 
         self.addSubInterface(self.settingInterface, FIF.SETTING, '设置', NavigationItemPosition.BOTTOM)
 

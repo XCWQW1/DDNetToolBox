@@ -4,7 +4,7 @@ import requests
 from PyQt5.QtGui import QPixmap
 from app.globals import GlobalsVal
 from app.config import cfg, base_path
-from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
 from qfluentwidgets import ImageLabel, CardWidget, SubtitleLabel, BodyLabel, HeaderCardWidget, InfoBar, InfoBarPosition, CaptionLabel, FlowLayout, SingleDirectionScrollArea, setFont
 
@@ -40,7 +40,7 @@ class CheckUpdate(QThread):
             response = requests.get("https://update.ddnet.org/update.json").json()
             self.finished.emit(response)
         except:
-            self.finished.emit({})
+            self.finished.emit([])
 
 
 class TEECard(CardWidget):
@@ -141,9 +141,11 @@ class FriendList(HeaderCardWidget):
         self.containerWidget = QWidget()
         self.fBoxLayout = FlowLayout(self.containerWidget)
 
+        self.batch_size = 1
+        self.current_index = 0
         try:
-            for i in GlobalsVal.ddnet_setting_config['add_friend']:
-                self.fBoxLayout.addWidget(FriendCard(i))
+            self.friend_list = GlobalsVal.ddnet_setting_config['add_friend']
+            QTimer.singleShot(0, self.load_friend)
         except:
             self.label = SubtitleLabel("没有获取到任何数据 T-T", self)
             self.hBoxLayout = QHBoxLayout()
@@ -161,6 +163,15 @@ class FriendList(HeaderCardWidget):
         self.viewLayout.addWidget(self.scrollArea)
         self.viewLayout.setContentsMargins(11, 11, 11, 11)
 
+    def load_friend(self):
+        end_index = min(self.current_index + self.batch_size, len(self.friend_list))
+        for i in range(self.current_index, end_index):
+            self.fBoxLayout.addWidget(FriendCard(self.friend_list[i]))
+        self.current_index = end_index
+
+        if self.current_index < len(self.friend_list):
+            QTimer.singleShot(0, self.load_friend)
+
 
 class HomeInterface(QWidget):
     def __init__(self, parent=None):
@@ -177,7 +188,7 @@ class HomeInterface(QWidget):
         except:
             self.TEECARD("nameless tee", "[D] nameless te")
 
-        self.vBoxLayout.addWidget(FriendList(), Qt.AlignBottom)
+        self.vBoxLayout.addWidget(FriendList(), Qt.AlignCenter)
 
         if cfg.get(cfg.DDNetCheckUpdate):
             self.check_update = CheckUpdate()
@@ -185,7 +196,7 @@ class HomeInterface(QWidget):
             self.check_update.start()
 
     def on_check_update_loaded(self, json_data: list):
-        if json_data == {}:
+        if json_data == []:
             InfoBar.warning(
                 title='DDNet 版本检测',
                 content="无法连接到DDNet官网",
