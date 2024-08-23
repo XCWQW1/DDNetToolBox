@@ -19,6 +19,7 @@ nuitka_command = [
     '--windows-icon-from-ico=app/resource/logo.ico',
     '--output-dir=build',
     '--remove-output',
+    '--assume-yes-for-downloads',
 ]
 
 if sys.argv[2] == "macos":
