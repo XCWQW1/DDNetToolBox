@@ -37,5 +37,5 @@ jobs:
     - name: 上传文件
       uses: actions/upload-artifact@v2
       with:
-        name: DDNetToolBox-${{ runner.os }}-${{ env.TAG_NAME }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+        name: DDNetToolBox-${{ runner.os }}-dev-${{ matrix.os == 'windows-latest' && '.exe' || '' }}
         path: ${{ matrix.os == 'ubuntu-latest' && 'build/main.bin' || (matrix.os == 'windows-latest' && 'build/main.exe' || 'build/main.bin') }}
