@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 main_script = 'main.py'
 
@@ -19,6 +20,9 @@ nuitka_command = [
     '--output-dir=build',
     '--remove-output',
 ]
+
+if sys.platform.lower().startswith('darwin'):
+    nuitka_command.append('--macos-create-app-bundle')
 
 # 添加数据文件和文件夹
 for item in files_and_folders:
