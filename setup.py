@@ -21,7 +21,7 @@ nuitka_command = [
     '--remove-output',
 ]
 
-if sys.platform.lower().startswith('darwin'):
+if sys.argv[2] == "macos":
     nuitka_command.append('--macos-create-app-bundle')
 
 # 添加数据文件和文件夹

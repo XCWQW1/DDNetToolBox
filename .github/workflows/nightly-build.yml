@@ -32,7 +32,7 @@ jobs:
     - name: '构建发行'
       shell: bash
       run: |
-        python setup.py build
+        ${{ matrix.os == 'macos-latest' && 'python setup.py build' || 'python setup.py build macos' }}
 
     - name: 上传文件
       uses: actions/upload-artifact@v2
