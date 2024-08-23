@@ -22,7 +22,7 @@ nuitka_command = [
     '--assume-yes-for-downloads',
 ]
 
-if sys.argv[2] == "macos":
+if sys.argv[1] == "macos":
     nuitka_command.append('--macos-create-app-bundle')
 
 # 添加数据文件和文件夹
