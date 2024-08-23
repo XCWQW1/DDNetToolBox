@@ -1,12 +1,11 @@
 import os
 import subprocess
-# import sys
+import sys
 
 main_script = 'main.py'
 
 files_and_folders = [
-    'main.py',
-    'app/',
+    'app/*',
 ]
 
 # 生成Nuitka的命令
@@ -20,10 +19,9 @@ nuitka_command = [
     '--output-dir=build',
     '--remove-output',
     '--assume-yes-for-downloads',
+    '--windows-disable-console',
+    '--onefile',
 ]
-
-# if sys.argv[1] == "macos":
-#     nuitka_command.append('--macos-create-app-bundle')
 
 # 添加数据文件和文件夹
 for item in files_and_folders:
@@ -37,6 +35,6 @@ for item in files_and_folders:
             f'--include-data-file={abs_path}={item}'
         ])
 
-
+print(nuitka_command)
 nuitka_command.append(main_script)
 subprocess.run(nuitka_command)
