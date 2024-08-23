@@ -19,9 +19,10 @@ nuitka_command = [
     '--windows-icon-from-ico=app/resource/logo.ico',
     '--output-dir=build',
     '--remove-output',
+    '--assume-yes-for-downloads',
 ]
 
-if sys.platform.lower().startswith('darwin'):
+if sys.argv[2] == "macos":
     nuitka_command.append('--macos-create-app-bundle')
 
 # 添加数据文件和文件夹
