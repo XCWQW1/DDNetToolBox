@@ -1,6 +1,6 @@
 import os
 import subprocess
-import sys
+# import sys
 
 main_script = 'main.py'
 
@@ -22,8 +22,8 @@ nuitka_command = [
     '--assume-yes-for-downloads',
 ]
 
-if sys.argv[1] == "macos":
-    nuitka_command.append('--macos-create-app-bundle')
+# if sys.argv[1] == "macos":
+#     nuitka_command.append('--macos-create-app-bundle')
 
 # 添加数据文件和文件夹
 for item in files_and_folders:
