@@ -1,6 +1,5 @@
-from PyInstaller.__main__ import run
-import shutil
 import os
+import subprocess
 
 main_script = 'main.py'
 
@@ -9,28 +8,30 @@ files_and_folders = [
     'app/',
 ]
 
-datas = []
+# 生成Nuitka的命令
+nuitka_command = [
+    'python', '-m', 'nuitka',
+    '--standalone',
+    '--onefile',
+    '--enable-plugin=pyqt5',
+    '--include-qt-plugins=sensible',
+    '--windows-icon-from-ico=app/resource/logo.ico',
+    '--output-dir=build',
+    '--remove-output',
+]
+
+# 添加数据文件和文件夹
 for item in files_and_folders:
     abs_path = os.path.abspath(item)
     if os.path.isdir(abs_path):
-        datas.append((abs_path + os.path.sep, item))
+        nuitka_command.extend([
+            f'--include-data-dir={abs_path}={item}'
+        ])
     else:
-        datas.append((abs_path, '.'))
+        nuitka_command.extend([
+            f'--include-data-file={abs_path}={item}'
+        ])
 
-pyinstaller_command = [
-    '--onefile',
-    '--windowed',
-    '--name=DDNetToolBox',
-    '--clean',
-    '--runtime-tmpdir=app/temp'
-    '--icon=app/resource/logo.ico',
-]
 
-for data in datas:
-    pyinstaller_command.extend(['--add-data', f'{data[0]}{os.pathsep}{data[1]}'])
-
-pyinstaller_command.append(main_script)
-
-run(pyinstaller_command)
-
-# shutil.copytree("build/app/resource", "dist")
+nuitka_command.append(main_script)
+subprocess.run(nuitka_command)

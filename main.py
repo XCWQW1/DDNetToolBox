@@ -113,6 +113,10 @@ class MainWindow(FluentWindow):
 
 
 if __name__ == '__main__':
+    # 初始化目录
+    if not os.path.exists(f"{os.getcwd()}/app"):
+        os.mkdir(f"{os.getcwd()}/app")
+
     # 启用DPI
     if cfg.get(cfg.dpiScale) == "Auto":
         QApplication.setHighDpiScaleFactorRoundingPolicy(

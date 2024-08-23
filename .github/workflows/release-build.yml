@@ -44,7 +44,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ env.TAG_NAME }}
-          file: dist/DDNetToolBox
+          file: build/main.bin
           asset_name: DDNetToolBox-${{ runner.os }}-${{ env.TAG_NAME }}
           prerelease: true
 
@@ -92,6 +92,6 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ env.TAG_NAME }}
-        file: dist/DDNetToolBox.exe
+        file: build/main.exe
         asset_name: DDNetToolBox-${{ runner.os }}-${{ env.TAG_NAME }}.exe
         prerelease: true
