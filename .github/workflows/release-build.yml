@@ -59,10 +59,20 @@ jobs:
           pip install -r requirements.txt
           pip install imageio
 
-      - name: '构建发行'
-        shell: bash
-        run: |
-          python setup.py build          
+      - name: 构建可执行文件
+        uses: Nuitka/Nuitka-Action@v1.1
+        with:
+          nuitka-version: main
+          script-name: main.py
+          onefile: true
+          windows-icon-from-ico: app/resource/logo.ico
+          enable-plugins: pyqt5
+          include-data-files: |
+            app/*=./app/
+          disable-console: ${{ github.event.inputs.build_type == 'release' }}
+          output-file: ${{ matrix.os == 'ubuntu-latest' && 'main.bin' || (matrix.os == 'windows-latest' && 'main.exe' || 'main.bin') }}
+          output-dir: build
+          mingw64: true
 
       - name: '上传发行'
         uses: svenstaro/upload-release-action@v2
