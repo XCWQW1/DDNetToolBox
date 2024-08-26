@@ -50,5 +50,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: DDNetToolBox
-        path: DDNetToolBox-${{ runner.os }}-dev${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+        path: build/DDNetToolBox-${{ runner.os }}-dev${{ matrix.os == 'windows-latest' && '.exe' || '' }}
         compression-level: 0
