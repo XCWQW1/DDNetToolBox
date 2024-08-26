@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]  # macos-latest
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     environment: dev
     steps:
@@ -41,13 +41,13 @@ jobs:
         include-data-dir: |
           ./app=app
         disable-console: true
-        output-file: ${{ matrix.os == 'ubuntu-latest' && 'main.bin' || (matrix.os == 'windows-latest' && 'main.exe' || 'main.bin') }}
+        output-file: DDNetToolBox-${{ runner.os }}-dev${{ matrix.os == 'windows-latest' && '.exe' || '' }}
         output-dir: build
         mingw64: true
 
     - name: 上传文件
       uses: actions/upload-artifact@v4
       with:
-        name: DDNetToolBox-${{ runner.os }}-dev${{ matrix.os == 'windows-latest' && '.exe' || '' }}
-        path: ${{ matrix.os == 'ubuntu-latest' && 'build/main.bin' || (matrix.os == 'windows-latest' && 'build/main.exe' || 'build/main.bin') }}
+        name: DDNetToolBox
+        path: DDNetToolBox-${{ runner.os }}-dev${{ matrix.os == 'windows-latest' && '.exe' || '' }}
         compression-level: 0
