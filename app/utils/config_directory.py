@@ -24,7 +24,7 @@ def get_ddnet_directory():
         else:
             directory = os.path.join(os.getenv("HOME"), ".teeworlds")
 
-    if not os.path.exists(directory):
+    if not os.path.isdir(directory):
         return './'
 
     if directory is None:
