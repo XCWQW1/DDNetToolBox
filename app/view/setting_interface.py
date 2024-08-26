@@ -4,10 +4,11 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QIcon
 from qfluentwidgets import (OptionsSettingCard, ScrollArea, ExpandLayout, FluentIcon, SettingCardGroup, setTheme,
                             InfoBar, isDarkTheme, Theme, PushSettingCard, SwitchSettingCard, PrimaryPushSettingCard,
-                            CaptionLabel, qconfig, CustomColorSettingCard, setThemeColor)
+                            CaptionLabel, qconfig, CustomColorSettingCard, setThemeColor, InfoBarPosition)
 from PyQt5.QtWidgets import QWidget, QFileDialog
 from app.config import cfg, base_path
 from app.globals import GlobalsVal
+from app.utils.network import JsonLoader
 
 
 class SettingInterface(ScrollArea):
@@ -85,8 +86,43 @@ class SettingInterface(ScrollArea):
 
         self.__initWidget()
 
-    def __check_update(self):
-        pass
+    def __check_update(self, data=None):
+        if data is not None:
+            if GlobalsVal.DDNetToolBoxVersion != data['tag_name']:
+                InfoBar.warning(
+                    title='检查更新',
+                    content="您当前的DDNetToolBox版本为 {} 最新版本为 {} 请及时更新".format(GlobalsVal.DDNetToolBoxVersion, data['tag_name']),
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.BOTTOM_RIGHT,
+                    duration=-1,
+                    parent=self
+                )
+            else:
+                InfoBar.success(
+                    title='检查更新',
+                    content="您的DDNetToolBox为最新版",
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.BOTTOM_RIGHT,
+                    duration=2000,
+                    parent=self
+                )
+            return
+
+        InfoBar.info(
+            title='检查更新',
+            content="正在检查更新中...",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.BOTTOM_RIGHT,
+            duration=2000,
+            parent=self
+        )
+
+        self.latest_release = JsonLoader('https://api.github.com/repos/XCWQW1/DDNetToolBox/releases/latest')
+        self.latest_release.finished.connect(self.__check_update)
+        self.latest_release.start()
 
     def __initWidget(self):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
