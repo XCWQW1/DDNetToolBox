@@ -207,7 +207,8 @@ class ResourceList(SingleDirectionScrollArea):
         end_index = min(self.current_index + self.batch_size, len(self.file_list))
         for i in range(self.current_index, end_index):
             resource_path = f"{self.file_path}/{self.file_list[i]}"
-
+            if not is_image(resource_path):
+                return
             self.fBoxLayout.addWidget(ResourceCard(resource_path, self.list_type))
         self.current_index = end_index
 
