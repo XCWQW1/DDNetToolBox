@@ -74,6 +74,7 @@ jobs:
           output-file: ${{ matrix.os == 'ubuntu-latest' && 'main.bin' || (matrix.os == 'windows-latest' && 'main.exe' || 'main.bin') }}
           output-dir: build
           mingw64: true
+          macos-create-app-bundle: true
 
       - name: '上传发行'
         uses: svenstaro/upload-release-action@v2
