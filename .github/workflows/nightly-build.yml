@@ -41,7 +41,7 @@ jobs:
         include-data-dir: |
           ./app=app
         disable-console: true
-        output-file: DDNetToolBox-${{ runner.os }}-dev${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+        output-file: DDNetToolBox
         output-dir: build
         mingw64: true
         macos-create-app-bundle: true
@@ -49,6 +49,6 @@ jobs:
     - name: 上传文件
       uses: actions/upload-artifact@v4
       with:
-        name: DDNetToolBox
-        path: build/DDNetToolBox-${{ runner.os }}-dev${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+        name: DDNetToolBox-${{ runner.os }}-dev${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+        path: build/DDNetToolBox
         compression-level: 0
