@@ -29,10 +29,20 @@ jobs:
         pip install -r requirements.txt
         pip install imageio
 
-    - name: '构建发行'
-      shell: bash
-      run: |
-        ${{ matrix.os == 'macos-latest' && 'python setup.py build' || 'python setup.py build macos' }}
+    - name: 构建可执行文件
+      uses: Nuitka/Nuitka-Action@v1.1
+      with:
+        nuitka-version: main
+        script-name: main.py
+        onefile: true
+        windows-icon-from-ico: app/resource/logo.ico
+        enable-plugins: pyqt5
+        include-data-files: |
+          app/*=./app/
+        disable-console: true
+        output-file: ${{ matrix.os == 'ubuntu-latest' && 'main.bin' || (matrix.os == 'windows-latest' && 'main.exe' || 'main.bin') }}
+        output-dir: build
+        mingw64: true
 
     - name: 上传文件
       uses: actions/upload-artifact@v4

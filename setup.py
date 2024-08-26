@@ -16,6 +16,5 @@ nuitka_command = [
     '--include-data-dir=app=app'
 ]
 
-print(nuitka_command)
 nuitka_command.append('main.py')
 subprocess.run(nuitka_command)

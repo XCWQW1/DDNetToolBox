@@ -117,7 +117,6 @@ if __name__ == '__main__':
     if not os.path.exists(f"{os.getcwd()}/app"):
         os.mkdir(f"{os.getcwd()}/app")
 
-    """
     # 启用DPI
     if cfg.get(cfg.dpiScale) == "Auto":
         QApplication.setHighDpiScaleFactorRoundingPolicy(
@@ -128,7 +127,6 @@ if __name__ == '__main__':
         os.environ["QT_SCALE_FACTOR"] = str(cfg.get(cfg.dpiScale))
 
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
-    """
 
     app = QApplication(sys.argv)
     translator = FluentTranslator(QLocale(QLocale.Chinese, QLocale.China))
