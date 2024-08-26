@@ -12,6 +12,7 @@ from qfluentwidgets import CommandBar, Action, FluentIcon, InfoBar, InfoBarPosit
 
 from app.config import cfg
 from app.globals import GlobalsVal
+from app.utils import is_image
 from app.utils.draw_tee import draw_tee
 
 
@@ -205,7 +206,9 @@ class ResourceList(SingleDirectionScrollArea):
     def load_next_batch(self):
         end_index = min(self.current_index + self.batch_size, len(self.file_list))
         for i in range(self.current_index, end_index):
-            self.fBoxLayout.addWidget(ResourceCard(f"{self.file_path}/{self.file_list[i]}", self.list_type))
+            resource_path = f"{self.file_path}/{self.file_list[i]}"
+
+            self.fBoxLayout.addWidget(ResourceCard(resource_path, self.list_type))
         self.current_index = end_index
 
         if self.current_index < len(self.file_list):

@@ -2,10 +2,11 @@ import json
 import os
 import re
 import sys
+import traceback
 
 from PyQt5.QtCore import Qt, QLocale, pyqtSignal
 from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox, QPushButton, QHBoxLayout, QTextEdit, QVBoxLayout, QDialog
 from qfluentwidgets import (NavigationItemPosition, FluentWindow,
                             FluentTranslator, qconfig, Theme, setThemeColor)
 from qfluentwidgets import FluentIcon as FIF
@@ -111,7 +112,38 @@ class MainWindow(FluentWindow):
         self.setWindowIcon(QIcon(base_path + f'/resource/{theme.value.lower()}/logo.svg'))
 
 
+def show_crash_message(exc_type, exc_value, exc_traceback):
+    error_message = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+
+    dialog = QDialog()
+    dialog.setWindowTitle("程序崩溃")
+
+    layout = QVBoxLayout(dialog)
+
+    text_edit = QTextEdit()
+    text_edit.setReadOnly(True)
+    text_edit.setText(f"发生了未预期的错误：\n\n{error_message}")
+    layout.addWidget(text_edit)
+
+    button_layout = QHBoxLayout()
+
+    copy_button = QPushButton("复制日志")
+    copy_button.clicked.connect(lambda: QApplication.clipboard().setText(error_message))
+    button_layout.addWidget(copy_button)
+
+    ok_button = QPushButton("确定并关闭")
+    ok_button.clicked.connect(dialog.accept)
+    button_layout.addWidget(ok_button)
+
+    layout.addLayout(button_layout)
+    dialog.exec_()
+    sys.exit(1)
+
+
 if __name__ == '__main__':
+    # 崩溃回溯
+    sys.excepthook = show_crash_message
+
     # 初始化目录
     if not os.path.exists(f"{os.getcwd()}/app"):
         os.mkdir(f"{os.getcwd()}/app")
@@ -132,4 +164,4 @@ if __name__ == '__main__':
     app.installTranslator(translator)
     w = MainWindow()
     w.show()
-    app.exec_()
+    sys.exit(app.exec_())
