@@ -1,4 +1,3 @@
-PyQt-Fluent-Widgets
 PyQt5
 PyQt5-Frameless-Window
 PyQt5-Qt5
