@@ -41,7 +41,7 @@ jobs:
           include-data-dir: |
             ./app=app
           disable-console: true
-          output-file: ${{ matrix.os == 'ubuntu-latest' && 'main.bin' || (matrix.os == 'windows-latest' && 'main.exe' || 'main.bin') }}
+          output-file: DDNetToolBox
           output-dir: build
           mingw64: true
           macos-create-app-bundle: true
@@ -51,6 +51,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ env.TAG_NAME }}
-          file: ${{ matrix.os == 'ubuntu-latest' && 'build/main.bin' || (matrix.os == 'windows-latest' && 'build/main.exe' || 'build/main.bin') }}
+          file: build/DDNetToolBox${{ matrix.os == 'windows-latest' && '.exe' || '' }}
           asset_name: DDNetToolBox-${{ runner.os }}-${{ env.TAG_NAME }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
           prerelease: true
