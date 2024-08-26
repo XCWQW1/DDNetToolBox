@@ -27,3 +27,11 @@ English | <a href="README_zh.md">简体中文</a>
 - [PyQt-Fluent-Widgets](https://github.com/zhiyiYo/PyQt-Fluent-Widgets) - A fluent design widgets library based on C++ Qt/PyQt/PySide.
 - Realyn//UnU - Created a logo for this project
 
+### Software Screenshots
+
+![front_page](images/home.png)
+![sidebar](images/home_tab.png)
+![cfg_management](images/cfg.png)
+![resource_management](images/resouces.png)
+![server_list_management](images/server_list.png)
+![setting](images/settings.png)

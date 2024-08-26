@@ -27,3 +27,12 @@
 
 - [PyQt-Fluent-Widgets](https://github.com/zhiyiYo/PyQt-Fluent-Widgets) - 基于 C++ Qt/PyQt/PySide 的流畅设计小部件库。
 - Realyn//UnU - 为本项目制作了logo
+
+### 软件截图
+
+![首页](images/home.png)
+![侧栏](images/home_tab.png)
+![cfg管理](images/cfg.png)
+![资源管理](images/resouces.png)
+![服务器列表管理](images/server_list.png)
+![设置](images/settings.png)

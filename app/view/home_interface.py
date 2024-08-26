@@ -182,12 +182,7 @@ class HomeInterface(QWidget):
         self.hBoxLayout = QHBoxLayout()
 
         self.vBoxLayout.addLayout(self.hBoxLayout, Qt.AlignTop)
-
-        try:
-            self.TEECARD(GlobalsVal.ddnet_setting_config["player_name"], GlobalsVal.ddnet_setting_config["dummy_name"])
-        except:
-            self.TEECARD("nameless tee", "[D] nameless te")
-
+        self.TEECARD(GlobalsVal.ddnet_setting_config.get("player_name", "nameless tee"), GlobalsVal.ddnet_setting_config.get("dummy_name", "[D] nameless te"))
         self.vBoxLayout.addWidget(FriendList(), Qt.AlignCenter)
 
         if cfg.get(cfg.DDNetCheckUpdate):

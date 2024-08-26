@@ -112,6 +112,7 @@ class ResourceCard(CardWidget):
                 if file == self.select_cursor:
                     self.button.setText('禁用')
                     button_select = self.button
+                    button_select.setChecked(True)
 
         self.vBoxLayout.addWidget(self.label, 0, Qt.AlignCenter)
 
@@ -128,11 +129,12 @@ class ResourceCard(CardWidget):
         if checked:
             self.button.setText('禁用')
             button_select = self.button
-            cfg.set(cfg.DDNetCheckUpdate, self.file)
+            cfg.set(cfg.DDNetAssetsCursor, self.file)
 
             shutil.copy(self.file, f"{ddnet_folder}/gui_cursor.png")
         else:
             self.button.setText('启用')
+            cfg.set(cfg.DDNetAssetsCursor, f"{ddnet_folder}/gui_cursor.png")
             os.remove(f"{ddnet_folder}/gui_cursor.png")
 
     def __on_clicked(self):
