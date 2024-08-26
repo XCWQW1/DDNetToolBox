@@ -7,9 +7,10 @@ from PyQt5.QtGui import QFontMetrics, QPainter, QBrush, QPainterPath, QPixmap
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QStackedWidget, QLabel, QFileDialog, QHBoxLayout
 from qfluentwidgets import CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, Pivot, TitleLabel, CardWidget, \
     ImageLabel, CaptionLabel, FlowLayout, SingleDirectionScrollArea, MessageBoxBase, SubtitleLabel, MessageBox, \
-    SearchLineEdit, TogglePushButton, ToolTipFilter, ToolTipPosition
+    SearchLineEdit, TogglePushButton, ToolTipFilter, ToolTipPosition, setFont
 
 from app.config import cfg, base_path
+from app.globals import GlobalsVal
 from app.utils.draw_tee import draw_tee
 from app.utils.network import JsonLoader, ImageLoader
 
@@ -92,7 +93,7 @@ class ResourceCard(CardWidget):
             button_select.setChecked(False)
             button_select.setText('启用')
 
-        ddnet_folder = cfg.get(cfg.DDNetFolder)
+        ddnet_folder = GlobalsVal.ddnet_folder
 
         if checked:
             self.button.setText('禁用')
@@ -152,11 +153,11 @@ class ResourceList(SingleDirectionScrollArea):
             os.mkdir(f"{os.getcwd()}/app/ddnet_assets/cursor")
 
         if self.list_type == "skins":
-            self.file_path = f"{cfg.get(cfg.DDNetFolder)}/{self.list_type}"
+            self.file_path = f"{GlobalsVal.ddnet_folder}/{self.list_type}"
         elif self.list_type == "cursor":
             self.file_path = f"{os.getcwd()}/app/ddnet_assets/cursor"
         else:
-            self.file_path = f"{cfg.get(cfg.DDNetFolder)}/assets/{self.list_type}"
+            self.file_path = f"{GlobalsVal.ddnet_folder}/assets/{self.list_type}"
 
         self.containerWidget = QWidget()
         self.containerWidget.setStyleSheet("background: transparent;")
@@ -202,6 +203,15 @@ class ResourceDownloadInterface(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setObjectName("ResourceDownloadInterface")
+
+        if GlobalsVal.ddnet_folder == os.getcwd():
+            self.label = SubtitleLabel("我们的程序无法自动找到DDNet配置目录\n请手动到设置中指定DDNet配置目录", self)
+            self.hBoxLayout = QHBoxLayout(self)
+
+            setFont(self.label, 24)
+            self.label.setAlignment(Qt.AlignCenter)
+            self.hBoxLayout.addWidget(self.label, 1, Qt.AlignCenter)
+            return
 
         self.pivot = Pivot(self)
         self.stackedWidget = QStackedWidget(self)
@@ -337,10 +347,10 @@ class ResourceDownloadInterface(QWidget):
             os.mkdir(f"{os.getcwd()}/app/ddnet_assets/cursor")
 
         if text == "skins":
-            file_path = f"{cfg.get(cfg.DDNetFolder)}/{text}"
+            file_path = f"{GlobalsVal.ddnet_folder}/{text}"
         elif text == "cursor":
             file_path = f"{os.getcwd()}/app/ddnet_assets/cursor"
         else:
-            file_path = f"{cfg.get(cfg.DDNetFolder)}/assets/{text}"
+            file_path = f"{GlobalsVal.ddnet_folder}/assets/{text}"
 
         return file_path

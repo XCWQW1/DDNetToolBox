@@ -5,7 +5,7 @@ from functools import partial
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QTableWidgetItem, QVBoxLayout, QHeaderView, QLabel, QFileDialog
 from qfluentwidgets import TableWidget, CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, MessageBox, \
-    TitleLabel, MessageBoxBase, SubtitleLabel, Dialog
+    TitleLabel, MessageBoxBase, SubtitleLabel, Dialog, setFont
 
 from app.config import cfg
 from app.globals import GlobalsVal
@@ -58,10 +58,19 @@ class CFGSelectMessageBox(MessageBoxBase):
         return self.selected_files
 
 
-class CFGInterface(QWidget):
+class CFGInterface(QWidget):    
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.setObjectName("CFGInterface")
+
+        if GlobalsVal.ddnet_folder == os.getcwd():
+            self.label = SubtitleLabel("我们的程序无法自动找到DDNet配置目录\n请手动到设置中指定DDNet配置目录", self)
+            self.hBoxLayout = QHBoxLayout(self)
+
+            setFont(self.label, 24)
+            self.label.setAlignment(Qt.AlignCenter)
+            self.hBoxLayout.addWidget(self.label, 1, Qt.AlignCenter)
+            return
 
         self.vBoxLayout = QVBoxLayout(self)
         self.commandBar = CommandBar(self)
@@ -82,8 +91,8 @@ class CFGInterface(QWidget):
         self.table.setBorderRadius(5)
         self.table.setWordWrap(False)
         self.table.setColumnCount(2)
-
-        cfg_list = [file for file in os.listdir(cfg.get(cfg.DDNetFolder)) if file.endswith('.cfg')]
+        
+        cfg_list = [file for file in os.listdir(GlobalsVal.ddnet_folder) if file.endswith('.cfg')]
         self.table.setRowCount(len(cfg_list))
 
         for i, server_link in enumerate(cfg_list, start=0):
@@ -128,11 +137,11 @@ class CFGInterface(QWidget):
                     errors = 0
                     cover = 0
                     for i in files:
-                        if i.split("/")[-1] in [file for file in os.listdir(cfg.get(cfg.DDNetFolder)) if file.endswith('.cfg')]:
+                        if i.split("/")[-1] in [file for file in os.listdir(GlobalsVal.ddnet_folder) if file.endswith('.cfg')]:
                             cover += 1
 
                         try:
-                            shutil.copy(i, cfg.get(cfg.DDNetFolder))
+                            shutil.copy(i, GlobalsVal.ddnet_folder)
                         except Exception as e:
                             InfoBar.error(
                                 title='错误',
@@ -186,7 +195,7 @@ class CFGInterface(QWidget):
             if w.exec():
                 for i, a in enumerate(rows_to_delete):
                     self.table.removeRow(a)
-                    os.remove(f"{cfg.get(cfg.DDNetFolder)}/{rows_to_delete[a]}")
+                    os.remove(f"{GlobalsVal.ddnet_folder}/{rows_to_delete[a]}")
                     delete += 1
 
             InfoBar.warning(
@@ -204,7 +213,7 @@ class CFGInterface(QWidget):
             self.table.setRowCount(0)
             self.table.clearSelection()
 
-            cfg_list = [file for file in os.listdir(cfg.get(cfg.DDNetFolder)) if file.endswith('.cfg')]
+            cfg_list = [file for file in os.listdir(GlobalsVal.ddnet_folder) if file.endswith('.cfg')]
             self.table.setRowCount(len(cfg_list))
 
             for i, server_link in enumerate(cfg_list, start=0):

@@ -34,7 +34,7 @@ class CheckUpdate(QThread):
 
     def run(self):
         if GlobalsVal.ddnet_info is None:
-            self.finished.emit({})
+            self.finished.emit([])
             return
         try:
             response = requests.get("https://update.ddnet.org/update.json").json()

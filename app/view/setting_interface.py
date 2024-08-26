@@ -189,6 +189,7 @@ class SettingInterface(ScrollArea):
 
         cfg.set(cfg.DDNetFolder, folder)
         self.DDNetFolder.setContent(folder)
+        self.__showRestartTooltip()
 
     def __connectSignalToSlot(self):
         """ connect signal to slot """
