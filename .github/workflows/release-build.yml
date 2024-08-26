@@ -69,7 +69,7 @@ jobs:
           windows-icon-from-ico: app/resource/logo.ico
           enable-plugins: pyqt5
           include-data-dir: |
-            app/*=./app/
+            ./app=app
           disable-console: true
           output-file: ${{ matrix.os == 'ubuntu-latest' && 'main.bin' || (matrix.os == 'windows-latest' && 'main.exe' || 'main.bin') }}
           output-dir: build
