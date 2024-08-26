@@ -27,7 +27,7 @@ class MainWindow(FluentWindow):
     def __init__(self):
         super().__init__()
 
-        file_list = cfg.get(cfg.DDNetFolder)
+        file_list = GlobalsVal.ddnet_folder
         for i in os.listdir(file_list):
             if i == "settings_ddnet.cfg":
                 with open(f'{file_list}/settings_ddnet.cfg', encoding='utf-8') as f:
@@ -58,11 +58,10 @@ class MainWindow(FluentWindow):
             if i == "ddnet-serverlist-urls.cfg":
                 GlobalsVal.server_list_file = True
 
-        if not os.path.exists(f"{os.getcwd()}/app/config"):
-            if not "player_name" in GlobalsVal.ddnet_setting_config:
-                return
-            if GlobalsVal.ddnet_setting_config["player_name"] == "Realyn//UnU":
-                cfg.set(cfg.themeColor, QColor("#af251a"))
+        if not os.path.isfile(f"{os.getcwd()}/app/config/config.json"):
+            if "player_name" in GlobalsVal.ddnet_setting_config:
+                if GlobalsVal.ddnet_setting_config["player_name"] == "Realyn//UnU":
+                    cfg.set(cfg.themeColor, QColor("#af251a"))
 
         # 创建子界面
         self.homeInterface = HomeInterface(self)

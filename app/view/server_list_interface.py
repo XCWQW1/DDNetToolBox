@@ -1,8 +1,10 @@
+import os
 from functools import partial
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QTableWidgetItem, QVBoxLayout, QHeaderView, QLabel
-from qfluentwidgets import TableWidget, CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, MessageBox, TitleLabel
+from qfluentwidgets import TableWidget, CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, MessageBox, \
+    TitleLabel, SubtitleLabel, setFont
 
 from app.config import cfg
 from app.globals import GlobalsVal
@@ -12,6 +14,15 @@ class ServerListInterface(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.setObjectName("ServerListInterface")
+
+        if GlobalsVal.ddnet_folder == os.getcwd():
+            self.label = SubtitleLabel("我们的程序无法自动找到DDNet配置目录\n请手动到设置中指定DDNet配置目录", self)
+            self.hBoxLayout = QHBoxLayout(self)
+
+            setFont(self.label, 24)
+            self.label.setAlignment(Qt.AlignCenter)
+            self.hBoxLayout.addWidget(self.label, 1, Qt.AlignCenter)
+            return
 
         self.vBoxLayout = QVBoxLayout(self)
         self.vBoxLayout.addWidget(TitleLabel('服务器列表管理', self))
@@ -48,7 +59,7 @@ class ServerListInterface(QWidget):
 
     def get_server_list(self):
         if GlobalsVal.server_list_file:
-            with open(f'{cfg.get(cfg.DDNetFolder)}/ddnet-serverlist-urls.cfg', encoding='utf-8') as f:
+            with open(f'{GlobalsVal.ddnet_folder}/ddnet-serverlist-urls.cfg', encoding='utf-8') as f:
                 return f.read().split('\n')
         else:
             return ['https://master1.ddnet.org/ddnet/15/servers.json', 'https://master2.ddnet.org/ddnet/15/servers.json', 'https://master3.ddnet.org/ddnet/15/servers.json', 'https://master4.ddnet.org/ddnet/15/servers.json']
@@ -117,7 +128,7 @@ class ServerListInterface(QWidget):
                 if not w.exec():
                     return
 
-            with open(f'{cfg.get(cfg.DDNetFolder)}/ddnet-serverlist-urls.cfg', 'w', encoding='utf-8') as f:
+            with open(f'{GlobalsVal.ddnet_folder}/ddnet-serverlist-urls.cfg', 'w', encoding='utf-8') as f:
                 f.write(save_txt)
 
             InfoBar.success(
@@ -153,7 +164,7 @@ class ServerListInterface(QWidget):
         elif text == "重置":
             w = MessageBox("警告", "该操作将会覆盖本地文件中的所有内容", self)
             if w.exec():
-                with open(f'{cfg.get(cfg.DDNetFolder)}/ddnet-serverlist-urls.cfg', 'w', encoding='utf-8') as f:
+                with open(f'{GlobalsVal.ddnet_folder}/ddnet-serverlist-urls.cfg', 'w', encoding='utf-8') as f:
                     f.write('https://master1.ddnet.org/ddnet/15/servers.json\nhttps://master2.ddnet.org/ddnet/15/servers.json\nhttps://master3.ddnet.org/ddnet/15/servers.json\nhttps://master4.ddnet.org/ddnet/15/servers.json')
 
                 self.Button_clicked('刷新')
@@ -170,7 +181,7 @@ class ServerListInterface(QWidget):
         elif text == "一键加速":
             w = MessageBox("警告", "该操作将会覆盖本地文件中的所有内容", self)
             if w.exec():
-                with open(f'{cfg.get(cfg.DDNetFolder)}/ddnet-serverlist-urls.cfg', 'w', encoding='utf-8') as f:
+                with open(f'{GlobalsVal.ddnet_folder}/ddnet-serverlist-urls.cfg', 'w', encoding='utf-8') as f:
                     f.write('https://master1.ddnet.org/ddnet/15/servers.json\nhttps://master2.ddnet.org/ddnet/15/servers.json\nhttps://master3.ddnet.org/ddnet/15/servers.json\nhttps://master4.ddnet.org/ddnet/15/servers.json\nhttps://xc.null.red:8043/api/ddnet/get_ddnet_server_list\nhttps://midnight-1312303898.cos.ap-nanjing.myqcloud.com/server-list.json')
 
                 self.Button_clicked('刷新')
