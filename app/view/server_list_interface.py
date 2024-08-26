@@ -25,6 +25,7 @@ class ServerListInterface(QWidget):
         self.addButton(FluentIcon.SAVE, '保存'),
         self.addButton(FluentIcon.SYNC, '刷新'),
         self.addButton(FluentIcon.UPDATE, '重置'),
+        self.addButton(FluentIcon.SPEED_HIGH, '一键加速'),
 
         self.table = TableWidget(self)
         self.table.setBorderVisible(True)
@@ -155,19 +156,28 @@ class ServerListInterface(QWidget):
                 with open(f'{cfg.get(cfg.DDNetFolder)}/ddnet-serverlist-urls.cfg', 'w', encoding='utf-8') as f:
                     f.write('https://master1.ddnet.org/ddnet/15/servers.json\nhttps://master2.ddnet.org/ddnet/15/servers.json\nhttps://master3.ddnet.org/ddnet/15/servers.json\nhttps://master4.ddnet.org/ddnet/15/servers.json')
 
-                self.table.clear()
-                self.table.setRowCount(0)
-                self.table.clearSelection()
-
-                server_list = self.get_server_list()
-                self.table.setRowCount(len(server_list))
-
-                for i, server_link in enumerate(server_list, start=0):
-                    self.table.setItem(i, 0, QTableWidgetItem(server_link))
+                self.Button_clicked('刷新')
 
                 InfoBar.success(
                     title='成功',
                     content="已重置服务器列表",
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.BOTTOM_RIGHT,
+                    duration=2000,
+                    parent=self
+                )
+        elif text == "一键加速":
+            w = MessageBox("警告", "该操作将会覆盖本地文件中的所有内容", self)
+            if w.exec():
+                with open(f'{cfg.get(cfg.DDNetFolder)}/ddnet-serverlist-urls.cfg', 'w', encoding='utf-8') as f:
+                    f.write('https://master1.ddnet.org/ddnet/15/servers.json\nhttps://master2.ddnet.org/ddnet/15/servers.json\nhttps://master3.ddnet.org/ddnet/15/servers.json\nhttps://master4.ddnet.org/ddnet/15/servers.json\nhttps://xc.null.red:8043/api/ddnet/get_ddnet_server_list\nhttps://midnight-1312303898.cos.ap-nanjing.myqcloud.com/server-list.json')
+
+                self.Button_clicked('刷新')
+
+                InfoBar.success(
+                    title='成功',
+                    content="已加速服务器列表，重启游戏应用加速",
                     orient=Qt.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
