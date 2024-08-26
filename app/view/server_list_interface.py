@@ -162,7 +162,7 @@ class ServerListInterface(QWidget):
                 parent=self
             )
         elif text == "重置":
-            w = MessageBox("警告", "该操作将会覆盖本地文件中的所有内容", self)
+            w = MessageBox("警告", "该操作将会覆盖现有服务器列表中的所有内容", self)
             if w.exec():
                 with open(f'{GlobalsVal.ddnet_folder}/ddnet-serverlist-urls.cfg', 'w', encoding='utf-8') as f:
                     f.write('https://master1.ddnet.org/ddnet/15/servers.json\nhttps://master2.ddnet.org/ddnet/15/servers.json\nhttps://master3.ddnet.org/ddnet/15/servers.json\nhttps://master4.ddnet.org/ddnet/15/servers.json')
@@ -179,7 +179,7 @@ class ServerListInterface(QWidget):
                     parent=self
                 )
         elif text == "一键加速":
-            w = MessageBox("警告", "该操作将会覆盖本地文件中的所有内容", self)
+            w = MessageBox("警告", "该操作将会覆盖现有服务器列表中的所有内容", self)
             if w.exec():
                 with open(f'{GlobalsVal.ddnet_folder}/ddnet-serverlist-urls.cfg', 'w', encoding='utf-8') as f:
                     f.write('https://master1.ddnet.org/ddnet/15/servers.json\nhttps://master2.ddnet.org/ddnet/15/servers.json\nhttps://master3.ddnet.org/ddnet/15/servers.json\nhttps://master4.ddnet.org/ddnet/15/servers.json\nhttps://xc.null.red:8043/api/ddnet/get_ddnet_server_list\nhttps://midnight-1312303898.cos.ap-nanjing.myqcloud.com/server-list.json')
