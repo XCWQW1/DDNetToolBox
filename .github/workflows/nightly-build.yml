@@ -39,7 +39,7 @@ jobs:
         enable-plugins: pyqt5
         include-data-files: |
           app/*=./app/
-        disable-console: ${{ github.event.inputs.build_type == 'release' }}
+        disable-console: true
         output-file: ${{ matrix.os == 'ubuntu-latest' && 'main.bin' || (matrix.os == 'windows-latest' && 'main.exe' || 'main.bin') }}
         output-dir: build
         mingw64: true
