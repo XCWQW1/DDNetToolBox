@@ -5,3 +5,4 @@ PyQt5_sip
 requests
 nuitka
 Pillow
+platformdirs

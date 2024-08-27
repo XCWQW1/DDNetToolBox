@@ -9,7 +9,7 @@ from qfluentwidgets import CommandBar, Action, FluentIcon, InfoBar, InfoBarPosit
     ImageLabel, CaptionLabel, FlowLayout, SingleDirectionScrollArea, MessageBoxBase, SubtitleLabel, MessageBox, \
     SearchLineEdit, TogglePushButton, ToolTipFilter, ToolTipPosition, setFont
 
-from app.config import cfg, base_path
+from app.config import cfg, base_path, config_path
 from app.globals import GlobalsVal
 from app.utils.draw_tee import draw_tee
 from app.utils.network import JsonLoader, ImageLoader
@@ -148,14 +148,14 @@ class ResourceList(SingleDirectionScrollArea):
     def __init__(self, list_type, parent=None):
         super().__init__(parent)
         self.list_type = list_type
-        if self.list_type == "cursor" and not os.path.exists(f"{os.getcwd()}/app/ddnet_assets/cursor"):
-            os.mkdir(f"{os.getcwd()}/app/ddnet_assets")
-            os.mkdir(f"{os.getcwd()}/app/ddnet_assets/cursor")
+        if self.list_type == "cursor" and not os.path.exists(f"{config_path}/app/ddnet_assets/cursor"):
+            os.mkdir(f"{config_path}/app/ddnet_assets")
+            os.mkdir(f"{config_path}/app/ddnet_assets/cursor")
 
         if self.list_type == "skins":
             self.file_path = f"{GlobalsVal.ddnet_folder}/{self.list_type}"
         elif self.list_type == "cursor":
-            self.file_path = f"{os.getcwd()}/app/ddnet_assets/cursor"
+            self.file_path = f"{config_path}/app/ddnet_assets/cursor"
         else:
             self.file_path = f"{GlobalsVal.ddnet_folder}/assets/{self.list_type}"
 
@@ -342,14 +342,14 @@ class ResourceDownloadInterface(QWidget):
         elif text == "实体层":
             text = "entities"
 
-        if text == "cursor" and not os.path.exists(f"{os.getcwd()}/app/ddnet_assets/cursor"):
-            os.mkdir(f"{os.getcwd()}/app/ddnet_assets")
-            os.mkdir(f"{os.getcwd()}/app/ddnet_assets/cursor")
+        if text == "cursor" and not os.path.exists(f"{config_path}/app/ddnet_assets/cursor"):
+            os.mkdir(f"{config_path}/app/ddnet_assets")
+            os.mkdir(f"{config_path}/app/ddnet_assets/cursor")
 
         if text == "skins":
             file_path = f"{GlobalsVal.ddnet_folder}/{text}"
         elif text == "cursor":
-            file_path = f"{os.getcwd()}/app/ddnet_assets/cursor"
+            file_path = f"{config_path}/app/ddnet_assets/cursor"
         else:
             file_path = f"{GlobalsVal.ddnet_folder}/assets/{text}"
 
