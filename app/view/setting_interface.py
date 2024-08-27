@@ -4,7 +4,8 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QIcon
 from qfluentwidgets import (OptionsSettingCard, ScrollArea, ExpandLayout, FluentIcon, SettingCardGroup, setTheme,
                             InfoBar, isDarkTheme, Theme, PushSettingCard, SwitchSettingCard, PrimaryPushSettingCard,
-                            CaptionLabel, qconfig, CustomColorSettingCard, setThemeColor, InfoBarPosition)
+                            CaptionLabel, qconfig, CustomColorSettingCard, setThemeColor, InfoBarPosition,
+                            ComboBoxSettingCard)
 from PyQt5.QtWidgets import QWidget, QFileDialog
 from app.config import cfg, base_path
 from app.globals import GlobalsVal
@@ -75,12 +76,21 @@ class SettingInterface(ScrollArea):
             parent=self.personalGroup
         )
 
+        self.languageCard = ComboBoxSettingCard(
+            cfg.language,
+            FluentIcon.LANGUAGE,
+            self.tr('语言'),
+            self.tr('更改首选语言'),
+            texts=['简体中文', 'English', self.tr('跟随系统默认')],
+            parent=self.personalGroup
+        )
+
         self.otherGroup = SettingCardGroup(self.tr('其他'), self.scrollWidget)
         self.checkUpdate = PrimaryPushSettingCard(
-            text="检查更新",
+            text=self.tr("检查更新"),
             icon=FluentIcon.INFO,
-            title="关于",
-            content=f"当前工具箱版本：{GlobalsVal.DDNetToolBoxVersion}，logo 由 燃斯(Realyn//UnU) 绘制"
+            title=self.tr("关于"),
+            content=self.tr("当前工具箱版本：{}，logo 由 燃斯(Realyn//UnU) 绘制").format(GlobalsVal.DDNetToolBoxVersion)
         )
         self.checkUpdate.clicked.connect(self.__check_update)
 
@@ -90,8 +100,8 @@ class SettingInterface(ScrollArea):
         if data is not None:
             if GlobalsVal.DDNetToolBoxVersion != data['tag_name']:
                 InfoBar.warning(
-                    title='检查更新',
-                    content="您当前的DDNetToolBox版本为 {} 最新版本为 {} 请及时更新".format(GlobalsVal.DDNetToolBoxVersion, data['tag_name']),
+                    title=self.tr('检查更新'),
+                    content=self.tr("您当前的DDNetToolBox版本为 {} 最新版本为 {} 请及时更新").format(GlobalsVal.DDNetToolBoxVersion, data['tag_name']),
                     orient=Qt.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
@@ -100,8 +110,8 @@ class SettingInterface(ScrollArea):
                 )
             else:
                 InfoBar.success(
-                    title='检查更新',
-                    content="您的DDNetToolBox为最新版",
+                    title=self.tr('检查更新'),
+                    content=self.tr("您的DDNetToolBox为最新版"),
                     orient=Qt.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
@@ -111,8 +121,8 @@ class SettingInterface(ScrollArea):
             return
 
         InfoBar.info(
-            title='检查更新',
-            content="正在检查更新中...",
+            title=self.tr('检查更新'),
+            content=self.tr("正在检查更新中..."),
             orient=Qt.Horizontal,
             isClosable=True,
             position=InfoBarPosition.BOTTOM_RIGHT,
@@ -150,6 +160,7 @@ class SettingInterface(ScrollArea):
         self.personalGroup.addSettingCard(self.themeCard)
         self.personalGroup.addSettingCard(self.themeColorCard)
         self.personalGroup.addSettingCard(self.zoomCard)
+        self.personalGroup.addSettingCard(self.languageCard)
         self.otherGroup.addSettingCard(self.checkUpdate)
 
         self.expandLayout.addWidget(self.DDNetGroup)

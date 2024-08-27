@@ -6,7 +6,8 @@ from app.globals import GlobalsVal
 from app.config import cfg, base_path
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
 from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
-from qfluentwidgets import ImageLabel, CardWidget, SubtitleLabel, BodyLabel, HeaderCardWidget, InfoBar, InfoBarPosition, CaptionLabel, FlowLayout, SingleDirectionScrollArea, setFont
+from qfluentwidgets import ImageLabel, CardWidget, SubtitleLabel, BodyLabel, HeaderCardWidget, InfoBar, InfoBarPosition, \
+    CaptionLabel, FlowLayout, SingleDirectionScrollArea, setFont
 
 from app.utils.network import ImageLoader
 
@@ -59,11 +60,11 @@ class TEECard(CardWidget):
 
         self.labels = [
             SubtitleLabel(name, self),
-            BodyLabel('全球排名：加载中...\n'
-                      '游戏分数：加载中...\n'
-                      '游玩时长：加载中...\n'
-                      '最后完成：加载中...\n'
-                      '入坑时间：加载中...', self),
+            BodyLabel(self.tr('全球排名：加载中...\n'
+                              '游戏分数：加载中...\n'
+                              '游玩时长：加载中...\n'
+                              '最后完成：加载中...\n'
+                              '入坑时间：加载中...'), self),
         ]
 
         for label in self.labels:
@@ -88,21 +89,25 @@ class TEECard(CardWidget):
 
     def on_data_loaded(self, json_data: dict):
         if json_data == {}:
-            self.labels[1].setText(f'全球排名：NO.数据获取失败\n'
-                                   f'游戏分数：数据获取失败/数据获取失败 分\n'
-                                   f'游玩时长：数据获取失败 小时\n'
-                                   f'最后完成：数据获取失败\n'
-                                   f'入坑时间：数据获取失败')
+            self.labels[1].setText(self.tr('全球排名：NO.数据获取失败\n'
+                                           '游戏分数：数据获取失败/数据获取失败 分\n'
+                                           '游玩时长：数据获取失败 小时\n'
+                                           '最后完成：数据获取失败\n'
+                                           '入坑时间：数据获取失败'))
             return
         use_time = 0
         for time in json_data['activity']:
             use_time = use_time + time['hours_played']
 
-        self.labels[1].setText(f'全球排名：NO.{json_data["points"]["rank"]}\n'
-                               f'游戏分数：{json_data["points"]["points"]}/{json_data["points"]["total"]} 分\n'
-                               f'游玩时长：{use_time} 小时\n'
-                               f'最后完成：{json_data["last_finishes"][0]["map"]}\n'
-                               f'入坑时间：{datetime.datetime.fromtimestamp(json_data["first_finish"]["timestamp"])}')
+        self.labels[1].setText(self.tr('全球排名：NO.{}\n'
+                                       '游戏分数：{}/{} 分\n'
+                                       '游玩时长：{} 小时\n'
+                                       '最后完成：{}\n'
+                                       '入坑时间：{}').format(json_data["points"]["rank"], json_data["points"]["points"],
+                                                             json_data["points"]["total"], use_time,
+                                                             json_data["last_finishes"][0]["map"],
+                                                             datetime.datetime.fromtimestamp(
+                                                                 json_data["first_finish"]["timestamp"])))
 
 
 class FriendCard(CardWidget):
@@ -136,7 +141,7 @@ class FriendCard(CardWidget):
 class FriendList(HeaderCardWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setTitle('好友列表')
+        self.setTitle(self.tr('好友列表'))
 
         self.containerWidget = QWidget()
         self.fBoxLayout = FlowLayout(self.containerWidget)
@@ -147,7 +152,7 @@ class FriendList(HeaderCardWidget):
             self.friend_list = GlobalsVal.ddnet_setting_config['add_friend']
             QTimer.singleShot(0, self.load_friend)
         except:
-            self.label = SubtitleLabel("没有获取到任何数据 T-T", self)
+            self.label = SubtitleLabel(self.tr("没有获取到任何数据 T-T"), self)
             self.hBoxLayout = QHBoxLayout()
 
             setFont(self.label, 24)
@@ -182,7 +187,8 @@ class HomeInterface(QWidget):
         self.hBoxLayout = QHBoxLayout()
 
         self.vBoxLayout.addLayout(self.hBoxLayout, Qt.AlignTop)
-        self.TEECARD(GlobalsVal.ddnet_setting_config.get("player_name", "nameless tee"), GlobalsVal.ddnet_setting_config.get("dummy_name", "[D] nameless te"))
+        self.TEECARD(GlobalsVal.ddnet_setting_config.get("player_name", "nameless tee"),
+                     GlobalsVal.ddnet_setting_config.get("dummy_name", "[D] nameless te"))
         self.vBoxLayout.addWidget(FriendList(), Qt.AlignCenter)
 
         if cfg.get(cfg.DDNetCheckUpdate):
@@ -193,8 +199,8 @@ class HomeInterface(QWidget):
     def on_check_update_loaded(self, json_data: list):
         if json_data == []:
             InfoBar.warning(
-                title='DDNet 版本检测',
-                content="无法连接到DDNet官网",
+                title=self.tr('DDNet 版本检测'),
+                content=self.tr("无法连接到DDNet官网"),
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
@@ -204,8 +210,9 @@ class HomeInterface(QWidget):
             return
         if GlobalsVal.ddnet_info['version'] != json_data[0]["version"]:
             InfoBar.warning(
-                title='DDNet 版本检测',
-                content="您当前的DDNet版本为 {} 最新版本为 {} 请及时更新".format(GlobalsVal.ddnet_info['version'], json_data[0]["version"]),
+                title=self.tr('DDNet 版本检测'),
+                content=self.tr("您当前的DDNet版本为 {} 最新版本为 {} 请及时更新").format(
+                    GlobalsVal.ddnet_info['version'], json_data[0]["version"]),
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,

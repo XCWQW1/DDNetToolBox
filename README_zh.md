@@ -30,9 +30,9 @@
 
 ### 软件截图
 
-![首页](images/home.png)
-![侧栏](images/home_tab.png)
-![cfg管理](images/cfg.png)
-![资源管理](images/resouces.png)
-![服务器列表管理](images/server_list.png)
-![设置](images/settings.png)
+![首页](images/zh/home.png)
+![侧栏](images/zh/home_tab.png)
+![cfg管理](images/zh/cfg.png)
+![资源管理](images/zh/resouces.png)
+![服务器列表管理](images/zh/server_list.png)
+![设置](images/zh/settings.png)
