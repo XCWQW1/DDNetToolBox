@@ -10,6 +10,8 @@ from app.view.main_interface import MainWindow
 
 if __name__ == '__main__':
     # 初始化目录
+    print(base_path)
+    print(os.listdir(base_path))
     if not os.path.exists(f"{config_path}"):
         os.mkdir(f"{config_path}")
         os.mkdir(f"{config_path}/app")
