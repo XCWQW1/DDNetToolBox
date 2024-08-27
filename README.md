@@ -29,9 +29,9 @@ English | <a href="README_zh.md">简体中文</a>
 
 ### Software Screenshots
 
-![front_page](images/zh/home.png)
-![sidebar](images/zh/home_tab.png)
-![cfg_management](images/zh/cfg.png)
-![resource_management](images/zh/resouces.png)
-![server_list_management](images/zh/server_list.png)
-![setting](images/zh/settings.png)
+![front_page](images/en/home.png)
+![sidebar](images/en/home_tab.png)
+![cfg_management](images/en/cfg.png)
+![resource_management](images/en/resouces.png)
+![server_list_management](images/en/server_list.png)
+![setting](images/en/settings.png)
