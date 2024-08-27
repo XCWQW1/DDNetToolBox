@@ -1,7 +1,7 @@
 import os
 import sys
 
-from app.config import cfg
+from app.config import cfg, base_path, config_path
 from PyQt5.QtCore import Qt, QTranslator
 from PyQt5.QtWidgets import QApplication
 from qfluentwidgets import FluentTranslator
@@ -10,8 +10,9 @@ from app.view.main_interface import MainWindow
 
 if __name__ == '__main__':
     # 初始化目录
-    if not os.path.exists(f"{os.getcwd()}/app"):
-        os.mkdir(f"{os.getcwd()}/app")
+    if not os.path.exists(f"{config_path}"):
+        os.mkdir(f"{config_path}")
+        os.mkdir(f"{config_path}/app")
 
     # 启用DPI
     if cfg.get(cfg.dpiScale) == "Auto":
@@ -29,7 +30,7 @@ if __name__ == '__main__':
     locale = cfg.get(cfg.language).value
     fluentTranslator = FluentTranslator(locale)
     Translator = QTranslator()
-    Translator.load(locale, "DDNetToolBox", ".", "app/resource/i18n")
+    Translator.load(locale, "DDNetToolBox", ".", base_path + "/resource/i18n")
 
     app.installTranslator(fluentTranslator)
     app.installTranslator(Translator)

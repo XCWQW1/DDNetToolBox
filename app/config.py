@@ -1,6 +1,7 @@
 import os
 from enum import Enum
 
+import platformdirs
 from PyQt5.QtCore import QLocale
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, Theme, OptionsConfigItem,
                             OptionsValidator, EnumSerializer, FolderValidator, BoolValidator, ColorConfigItem,
@@ -9,6 +10,7 @@ from qfluentwidgets import (qconfig, QConfig, ConfigItem, Theme, OptionsConfigIt
 from app.utils.config_directory import get_ddnet_directory
 
 base_path = os.path.dirname(__file__)
+config_path = platformdirs.user_config_dir("DDNetToolBox")
 
 
 class Language(Enum):
@@ -43,4 +45,4 @@ class Config(QConfig):
 
 
 cfg = Config()
-qconfig.load(os.getcwd() + '/app/config/config.json', cfg)
+qconfig.load(config_path + '/app/config/config.json', cfg)

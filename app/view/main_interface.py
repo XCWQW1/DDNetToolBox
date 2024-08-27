@@ -4,12 +4,12 @@ import re
 import sys
 import traceback
 
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtGui import QColor, QIcon
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QHBoxLayout, QPushButton, QApplication
-from qfluentwidgets import Theme, qconfig, NavigationItemPosition, FluentWindow
+from qfluentwidgets import Theme, qconfig, NavigationItemPosition, FluentWindow, InfoBar, InfoBarPosition
 
-from app.config import cfg, base_path
+from app.config import cfg, base_path, config_path
 from app.globals import GlobalsVal
 from app.view.cfg_interface import CFGInterface
 from app.view.home_interface import HomeInterface
@@ -58,7 +58,7 @@ class MainWindow(FluentWindow):
             if i == "ddnet-serverlist-urls.cfg":
                 GlobalsVal.server_list_file = True
 
-        if not os.path.isfile(f"{os.getcwd()}/app/config/config.json"):
+        if not os.path.isfile(f"{config_path}/app/config/config.json"):
             if "player_name" in GlobalsVal.ddnet_setting_config:
                 if GlobalsVal.ddnet_setting_config["player_name"] == "Realyn//UnU":
                     cfg.set(cfg.themeColor, QColor("#af251a"))
