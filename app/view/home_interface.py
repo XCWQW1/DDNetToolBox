@@ -136,7 +136,7 @@ class FriendCard(CardWidget):
 class FriendList(HeaderCardWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setTitle('好友列表')
+        self.setTitle(self.tr('好友列表'))
 
         self.containerWidget = QWidget()
         self.fBoxLayout = FlowLayout(self.containerWidget)
@@ -147,7 +147,7 @@ class FriendList(HeaderCardWidget):
             self.friend_list = GlobalsVal.ddnet_setting_config['add_friend']
             QTimer.singleShot(0, self.load_friend)
         except:
-            self.label = SubtitleLabel("没有获取到任何数据 T-T", self)
+            self.label = SubtitleLabel(self.tr("没有获取到任何数据 T-T"), self)
             self.hBoxLayout = QHBoxLayout()
 
             setFont(self.label, 24)
@@ -193,8 +193,8 @@ class HomeInterface(QWidget):
     def on_check_update_loaded(self, json_data: list):
         if json_data == []:
             InfoBar.warning(
-                title='DDNet 版本检测',
-                content="无法连接到DDNet官网",
+                title=self.tr('DDNet 版本检测'),
+                content=self.tr("无法连接到DDNet官网"),
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
@@ -204,8 +204,8 @@ class HomeInterface(QWidget):
             return
         if GlobalsVal.ddnet_info['version'] != json_data[0]["version"]:
             InfoBar.warning(
-                title='DDNet 版本检测',
-                content="您当前的DDNet版本为 {} 最新版本为 {} 请及时更新".format(GlobalsVal.ddnet_info['version'], json_data[0]["version"]),
+                title=self.tr('DDNet 版本检测'),
+                content=self.tr("您当前的DDNet版本为 {} 最新版本为 {} 请及时更新").format(GlobalsVal.ddnet_info['version'], json_data[0]["version"]),
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,

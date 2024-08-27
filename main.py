@@ -1,149 +1,14 @@
-import json
 import os
-import re
 import sys
-import traceback
 
-from PyQt5.QtCore import Qt, QLocale, pyqtSignal
-from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtWidgets import QApplication, QMessageBox, QPushButton, QHBoxLayout, QTextEdit, QVBoxLayout, QDialog
-from qfluentwidgets import (NavigationItemPosition, FluentWindow,
-                            FluentTranslator, qconfig, Theme, setThemeColor)
-from qfluentwidgets import FluentIcon as FIF
+from app.config import cfg
+from PyQt5.QtCore import Qt, QTranslator
+from PyQt5.QtWidgets import QApplication
+from qfluentwidgets import FluentTranslator
 
-from app.config import cfg, base_path
-from app.globals import GlobalsVal
-from app.view.cfg_interface import CFGInterface
-from app.view.home_interface import HomeInterface
-from app.view.resource_download_interface import ResourceDownloadInterface
-from app.view.resource_interface import ResourceInterface
-from app.view.server_list_preview_interface import ServerListPreviewInterface
-from app.view.setting_interface import SettingInterface
-from app.view.server_list_interface import ServerListInterface
-
-
-class MainWindow(FluentWindow):
-    """ 主界面 """
-    themeChane = pyqtSignal(Theme)
-    def __init__(self):
-        super().__init__()
-
-        file_list = GlobalsVal.ddnet_folder
-        for i in os.listdir(file_list):
-            if i == "settings_ddnet.cfg":
-                with open(f'{file_list}/settings_ddnet.cfg', encoding='utf-8') as f:
-                    lines = f.read().strip().split('\n')
-                    for line in lines:
-                        if line.strip():
-                            parts = re.split(r'\s+', line, maxsplit=1)
-                            if len(parts) == 2:
-                                key, value = parts
-                                if ',' in value:
-                                    value = [v.strip(' "') for v in re.split(r',', value)]
-                                else:
-                                    value = self.remove_quotes(value)
-
-                                if key in GlobalsVal.ddnet_setting_config:
-                                    if not isinstance(GlobalsVal.ddnet_setting_config[key], list):
-                                        GlobalsVal.ddnet_setting_config[key] = [GlobalsVal.ddnet_setting_config[key]]
-                                    else:
-                                        GlobalsVal.ddnet_setting_config[key].append(value)
-                                else:
-                                    if type(value) != str:
-                                        GlobalsVal.ddnet_setting_config[key] = [value]
-                                    else:
-                                        GlobalsVal.ddnet_setting_config[key] = value
-            if i == "ddnet-info.json":
-                with open(f'{file_list}/ddnet-info.json', encoding='utf-8') as f:
-                    GlobalsVal.ddnet_info = json.loads(f.read())
-            if i == "ddnet-serverlist-urls.cfg":
-                GlobalsVal.server_list_file = True
-
-        if not os.path.isfile(f"{os.getcwd()}/app/config/config.json"):
-            if "player_name" in GlobalsVal.ddnet_setting_config:
-                if GlobalsVal.ddnet_setting_config["player_name"] == "Realyn//UnU":
-                    cfg.set(cfg.themeColor, QColor("#af251a"))
-
-        # 创建子界面
-        self.homeInterface = HomeInterface(self)
-        self.CFGInterface = CFGInterface()
-        self.ResourceInterface = ResourceInterface()
-        # self.ResourceDownloadInterface = ResourceDownloadInterface()
-        self.ServerListMirrorInterface = ServerListInterface()
-        self.ServerListPreviewInterface = ServerListPreviewInterface()
-
-        self.settingInterface = SettingInterface(self.themeChane)
-
-        self.initNavigation()
-        self.initWindow()
-
-        self.themeChane.connect(self.__theme_change)
-
-    @staticmethod
-    def remove_quotes(text):
-        if text.startswith('"') and text.endswith('"'):
-            text = text[1:-1]
-        if '" "' in text:
-            text = re.split(r'" "', text)
-        return text
-
-    def initNavigation(self):
-        self.addSubInterface(self.homeInterface, FIF.HOME, '首页')
-        self.addSubInterface(self.CFGInterface, FIF.APPLICATION, 'CFG管理')
-        self.addSubInterface(self.ResourceInterface, FIF.EMOJI_TAB_SYMBOLS, '材质管理')
-        self.addSubInterface(self.ServerListMirrorInterface, FIF.LIBRARY, '服务器列表管理')
-        # self.addSubInterface(self.ServerListPreviewInterface, FIF.LIBRARY, '服务器列表预览')
-        # self.addSubInterface(self.ResourceDownloadInterface, FIF.DOWNLOAD, '材质下载')
-
-        self.addSubInterface(self.settingInterface, FIF.SETTING, '设置', NavigationItemPosition.BOTTOM)
-
-    def initWindow(self):
-        self.resize(820, 600)
-        theme = cfg.get(cfg.themeMode)
-        theme = qconfig.theme if theme == Theme.AUTO else theme
-        self.setWindowIcon(QIcon(base_path + f'/resource/{theme.value.lower()}/logo.svg'))
-        self.setWindowTitle('DDNetToolBox')
-
-        # 关闭win11的云母特效，他会导致窗口卡顿
-        self.setMicaEffectEnabled(False)
-
-    def __theme_change(self, theme: Theme):
-        theme = qconfig.theme if theme == Theme.AUTO else theme
-        self.setWindowIcon(QIcon(base_path + f'/resource/{theme.value.lower()}/logo.svg'))
-
-
-def show_crash_message(exc_type, exc_value, exc_traceback):
-    error_message = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
-
-    dialog = QDialog()
-    dialog.setWindowTitle("程序崩溃")
-
-    layout = QVBoxLayout(dialog)
-
-    text_edit = QTextEdit()
-    text_edit.setReadOnly(True)
-    text_edit.setText(f"发生了未预期的错误：\n\n{error_message}")
-    layout.addWidget(text_edit)
-
-    button_layout = QHBoxLayout()
-
-    copy_button = QPushButton("复制日志")
-    copy_button.clicked.connect(lambda: QApplication.clipboard().setText(error_message))
-    button_layout.addWidget(copy_button)
-
-    ok_button = QPushButton("确定并关闭")
-    ok_button.clicked.connect(dialog.accept)
-    button_layout.addWidget(ok_button)
-
-    layout.addLayout(button_layout)
-    dialog.exec_()
-    sys.exit(1)
-
+from app.view.main_interface import MainWindow
 
 if __name__ == '__main__':
-    # 崩溃回溯
-    sys.excepthook = show_crash_message
-
     # 初始化目录
     if not os.path.exists(f"{os.getcwd()}/app"):
         os.mkdir(f"{os.getcwd()}/app")
@@ -160,8 +25,19 @@ if __name__ == '__main__':
     QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
     app = QApplication(sys.argv)
-    translator = FluentTranslator(QLocale(QLocale.Chinese, QLocale.China))
-    app.installTranslator(translator)
+
+    locale = cfg.get(cfg.language).value
+    fluentTranslator = FluentTranslator(locale)
+    Translator = QTranslator()
+    Translator.load(locale, "DDNetToolBox", ".", "app/resource/i18n")
+
+    app.installTranslator(fluentTranslator)
+    app.installTranslator(Translator)
+
     w = MainWindow()
+
+    # 崩溃回溯
+    sys.excepthook = w.show_crash_message
+
     w.show()
     sys.exit(app.exec_())

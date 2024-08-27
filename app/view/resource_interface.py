@@ -31,8 +31,8 @@ class FileSelectMessageBox(MessageBoxBase):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.selected_files = None
-        self.titleLabel = SubtitleLabel('选择文件')
-        self.label = QLabel("拖拽文件到此处或点击选择文件", self)
+        self.titleLabel = SubtitleLabel(self.tr('选择文件'))
+        self.label = QLabel(self.tr("拖拽文件到此处或点击选择文件"), self)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setStyleSheet("QLabel { border: 2px dashed #aaa; }")
 
@@ -61,7 +61,7 @@ class FileSelectMessageBox(MessageBoxBase):
     def select_file(self, event):
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
-        files, _ = QFileDialog.getOpenFileNames(self, "选择文件", "", "All Files (*)",
+        files, _ = QFileDialog.getOpenFileNames(self, self.tr("选择文件"), "", "All Files (*)",
                                                 options=options)
 
         if files:
@@ -103,14 +103,14 @@ class ResourceCard(CardWidget):
         self.vBoxLayout.addWidget(self.iconWidget, 0, Qt.AlignCenter)
 
         if self.card_type == "cursor":
-            self.button = TogglePushButton("启用", self)
+            self.button = TogglePushButton(self.tr("启用"), self)
             self.button.clicked.connect(self.__button_clicked)
             self.vBoxLayout.addWidget(self.button, 0, Qt.AlignCenter)
 
             self.select_cursor = cfg.get(cfg.DDNetAssetsCursor)
             if self.select_cursor is not None:
                 if file == self.select_cursor:
-                    self.button.setText('禁用')
+                    self.button.setText(self.tr('禁用'))
                     button_select = self.button
                     button_select.setChecked(True)
 
@@ -122,18 +122,18 @@ class ResourceCard(CardWidget):
         global button_select
         if button_select is not None and button_select != self.button:
             button_select.setChecked(False)
-            button_select.setText('启用')
+            button_select.setText(self.tr('启用'))
 
         ddnet_folder = GlobalsVal.ddnet_folder
 
         if checked:
-            self.button.setText('禁用')
+            self.button.setText(self.tr('禁用'))
             button_select = self.button
             cfg.set(cfg.DDNetAssetsCursor, self.file)
 
             shutil.copy(self.file, f"{ddnet_folder}/gui_cursor.png")
         else:
-            self.button.setText('启用')
+            self.button.setText(self.tr('启用'))
             cfg.set(cfg.DDNetAssetsCursor, f"{ddnet_folder}/gui_cursor.png")
             os.remove(f"{ddnet_folder}/gui_cursor.png")
 
@@ -236,7 +236,7 @@ class ResourceInterface(QWidget):
         self.setObjectName("ResourceInterface")
 
         if os.path.abspath(GlobalsVal.ddnet_folder) == os.path.abspath(os.getcwd()):
-            self.label = SubtitleLabel("我们的程序无法自动找到DDNet配置目录\n请手动到设置中指定DDNet配置目录", self)
+            self.label = SubtitleLabel(self.tr("我们的程序无法自动找到DDNet配置目录\n请手动到设置中指定DDNet配置目录"), self)
             self.hBoxLayout = QHBoxLayout(self)
 
             setFont(self.label, 24)
@@ -247,14 +247,14 @@ class ResourceInterface(QWidget):
         self.pivot = Pivot(self)
         self.stackedWidget = QStackedWidget(self)
         self.vBoxLayout = QVBoxLayout(self)
-        self.vBoxLayout.addWidget(TitleLabel('材质管理', self))
+        self.vBoxLayout.addWidget(TitleLabel(self.tr('材质管理'), self))
 
         self.commandBar = CommandBar(self)
         self.commandBar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
-        self.addButton(FluentIcon.ADD, '添加'),
-        self.addButton(FluentIcon.DELETE, '删除'),
-        self.addButton(FluentIcon.SYNC, '刷新'),
+        self.addButton(FluentIcon.ADD, self.tr('添加'), '添加'),
+        self.addButton(FluentIcon.DELETE, self.tr('删除'), '删除'),
+        self.addButton(FluentIcon.SYNC, self.tr('刷新'), '刷新'),
 
         self.TeedataSkinsInterface = ResourceList('skins', self)
         self.TeedataGameSkinsInterface = ResourceList('game', self)
@@ -263,12 +263,12 @@ class ResourceInterface(QWidget):
         self.TeedataParticlesInterface = ResourceList('particles', self)
         self.TeedataEntitiesInterface = ResourceList('entities', self)
 
-        self.addSubInterface(self.TeedataSkinsInterface, 'TeedataSkinsInterface', '皮肤')
-        self.addSubInterface(self.TeedataGameSkinsInterface, 'TeedataGameSkinsInterface', '贴图')
-        self.addSubInterface(self.TeedataEmoticonsInterface, 'TeedataEmoticonsInterface', '表情')
-        self.addSubInterface(self.TeedataCursorsInterface, 'TeedataCursorsInterface', '光标')
-        self.addSubInterface(self.TeedataParticlesInterface, 'TeedataParticlesInterface', '粒子')
-        self.addSubInterface(self.TeedataEntitiesInterface, 'TeedataEntitiesInterface', '实体层')
+        self.addSubInterface(self.TeedataSkinsInterface, 'TeedataSkinsInterface', self.tr('皮肤'))
+        self.addSubInterface(self.TeedataGameSkinsInterface, 'TeedataGameSkinsInterface', self.tr('贴图'))
+        self.addSubInterface(self.TeedataEmoticonsInterface, 'TeedataEmoticonsInterface', self.tr('表情'))
+        self.addSubInterface(self.TeedataCursorsInterface, 'TeedataCursorsInterface', self.tr('光标'))
+        self.addSubInterface(self.TeedataParticlesInterface, 'TeedataParticlesInterface', self.tr('粒子'))
+        self.addSubInterface(self.TeedataEntitiesInterface, 'TeedataEntitiesInterface', self.tr('实体层'))
 
         self.vBoxLayout.addWidget(self.pivot, 0, Qt.AlignLeft)
         self.vBoxLayout.addWidget(self.commandBar)
@@ -284,9 +284,9 @@ class ResourceInterface(QWidget):
         self.stackedWidget.addWidget(widget)
         self.pivot.addItem(routeKey=objectName, text=text)
 
-    def addButton(self, icon, text):
+    def addButton(self, icon, text, text_type):
         action = Action(icon, text, self)
-        action.triggered.connect(partial(self.Button_clicked, text))
+        action.triggered.connect(partial(self.Button_clicked, text_type))
         self.commandBar.addAction(action)
 
     def Button_clicked(self, text):
@@ -299,8 +299,8 @@ class ResourceInterface(QWidget):
                 files = w.get_selected_files()
                 if files is None:
                     InfoBar.error(
-                        title='错误',
-                        content="您没有选择任何文件",
+                        title=self.tr('错误'),
+                        content=self.tr("您没有选择任何文件"),
                         orient=Qt.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.BOTTOM_RIGHT,
@@ -318,8 +318,8 @@ class ResourceInterface(QWidget):
                             shutil.copy(i, self.get_resource_url(current_item))
                         except Exception as e:
                             InfoBar.error(
-                                title='错误',
-                                content=f"文件 {i} 复制失败\n原因：{e}",
+                                title=self.tr('错误'),
+                                content=self.tr("文件 {} 复制失败\n原因：{}").format(i, e),
                                 orient=Qt.Horizontal,
                                 isClosable=True,
                                 position=InfoBarPosition.BOTTOM_RIGHT,
@@ -330,7 +330,7 @@ class ResourceInterface(QWidget):
 
                     InfoBar.success(
                         title='成功',
-                        content=f"文件复制已完成\n共复制了 {len(files)} 个文件，{cover} 个文件被覆盖，{errors} 个文件失败",
+                        content=self.tr("文件复制已完成\n共复制了 {} 个文件，{} 个文件被覆盖，{} 个文件失败").format(len(files), cover, errors),
                         orient=Qt.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.BOTTOM_RIGHT,
@@ -343,8 +343,8 @@ class ResourceInterface(QWidget):
             selected_items = select_list[self.get_resource_pivot_type(current_item)]
             if not selected_items:
                 InfoBar.warning(
-                    title='警告',
-                    content="您没有选择任何东西",
+                    title=self.tr('警告'),
+                    content=self.tr("您没有选择任何东西"),
                     orient=Qt.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
@@ -357,7 +357,7 @@ class ResourceInterface(QWidget):
             for i in selected_items:
                 delete_file += f"{i}\n"
 
-            w = MessageBox("警告", f"此操作将会从磁盘中永久删除下列文件，不可恢复：\n{delete_file}", self)
+            w = MessageBox(self.tr("警告"), self.tr("此操作将会从磁盘中永久删除下列文件，不可恢复：\n{}").format(delete_file), self)
             delete = 0
             if w.exec():
                 for i in selected_items:
@@ -370,8 +370,8 @@ class ResourceInterface(QWidget):
                 select_list[self.get_resource_pivot_type(current_item)] = {}
 
                 InfoBar.warning(
-                    title='成功',
-                    content=f"共删除 {delete} 个文件，{len(selected_items) - delete} 个文件删除失败",
+                    title=self.tr('成功'),
+                    content=self.tr("共删除 {} 个文件，{} 个文件删除失败").format(delete, len(selected_items) - delete),
                     orient=Qt.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
@@ -387,8 +387,8 @@ class ResourceInterface(QWidget):
             select_list[self.get_resource_pivot_type(current_item)] = {}
 
             InfoBar.success(
-                title='成功',
-                content="已重新加载本地资源",
+                title=self.tr('成功'),
+                content=self.tr("已重新加载本地资源"),
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,

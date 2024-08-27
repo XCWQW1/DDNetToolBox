@@ -17,8 +17,8 @@ class CFGSelectMessageBox(MessageBoxBase):
         super().__init__(parent)
 
         self.selected_files = None
-        self.titleLabel = SubtitleLabel('选择CFG文件')
-        self.label = QLabel("拖拽文件到此处或点击选择文件", self)
+        self.titleLabel = SubtitleLabel(self.tr('选择CFG文件'))
+        self.label = QLabel(self.tr("拖拽文件到此处或点击选择文件"), self)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setStyleSheet("QLabel { border: 2px dashed #aaa; }")
 
@@ -47,7 +47,7 @@ class CFGSelectMessageBox(MessageBoxBase):
     def select_file(self, event):
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
-        files, _ = QFileDialog.getOpenFileNames(self, "选择CFG文件", "", "CFG Files (*.cfg);;All Files (*)",
+        files, _ = QFileDialog.getOpenFileNames(self, self.tr("选择CFG文件"), "", "CFG Files (*.cfg);;All Files (*)",
                                                 options=options)
 
         if files:
@@ -64,7 +64,7 @@ class CFGInterface(QWidget):
         self.setObjectName("CFGInterface")
 
         if os.path.abspath(GlobalsVal.ddnet_folder) == os.path.abspath(os.getcwd()):
-            self.label = SubtitleLabel("我们的程序无法自动找到DDNet配置目录\n请手动到设置中指定DDNet配置目录", self)
+            self.label = SubtitleLabel(self.tr("我们的程序无法自动找到DDNet配置目录\n请手动到设置中指定DDNet配置目录"), self)
             self.hBoxLayout = QHBoxLayout(self)
 
             setFont(self.label, 24)
@@ -76,16 +76,14 @@ class CFGInterface(QWidget):
         self.commandBar = CommandBar(self)
         self.table = TableWidget(self)
 
-        self.vBoxLayout.addWidget(TitleLabel('CFG管理', self))
+        self.vBoxLayout.addWidget(TitleLabel(self.tr('CFG管理'), self))
         self.setLayout(self.vBoxLayout)
 
         self.commandBar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
-        self.addButton(FluentIcon.ADD, '添加'),
-        self.addButton(FluentIcon.DELETE, '删除'),
-        # self.addButton(FluentIcon.ACCEPT, '启用'),
-        # self.addButton(FluentIcon.CLOSE, '禁用'),
-        self.addButton(FluentIcon.SYNC, '刷新'),
+        self.addButton(FluentIcon.ADD, self.tr('添加'), '添加'),
+        self.addButton(FluentIcon.DELETE, self.tr('删除'), '删除'),
+        self.addButton(FluentIcon.SYNC, self.tr('刷新'), '刷新'),
 
         self.table.setBorderVisible(True)
         self.table.setBorderRadius(5)
@@ -113,9 +111,9 @@ class CFGInterface(QWidget):
         self.vBoxLayout.addWidget(self.commandBar)
         self.vBoxLayout.addWidget(self.table)
 
-    def addButton(self, icon, text):
+    def addButton(self, icon, text, text_type):
         action = Action(icon, text, self)
-        action.triggered.connect(partial(self.Button_clicked, text))
+        action.triggered.connect(partial(self.Button_clicked, text_type))
         self.commandBar.addAction(action)
 
     def Button_clicked(self, text):
@@ -125,8 +123,8 @@ class CFGInterface(QWidget):
                 files = w.get_selected_files()
                 if files is None:
                     InfoBar.error(
-                        title='错误',
-                        content="您没有选择任何文件",
+                        title=self.tr('错误'),
+                        content=self.tr("您没有选择任何文件"),
                         orient=Qt.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.BOTTOM_RIGHT,
@@ -144,8 +142,8 @@ class CFGInterface(QWidget):
                             shutil.copy(i, GlobalsVal.ddnet_folder)
                         except Exception as e:
                             InfoBar.error(
-                                title='错误',
-                                content=f"文件 {i} 复制失败\n原因：{e}",
+                                title=self.tr('错误'),
+                                content=self.tr("文件 {} 复制失败\n原因：{}").format(i, e),
                                 orient=Qt.Horizontal,
                                 isClosable=True,
                                 position=InfoBarPosition.BOTTOM_RIGHT,
@@ -156,7 +154,7 @@ class CFGInterface(QWidget):
 
                     InfoBar.success(
                         title='成功',
-                        content=f"文件复制已完成\n共复制了 {len(files)} 个文件，{cover} 个文件被覆盖，{errors} 个文件失败",
+                        content=self.tr("文件复制已完成\n共复制了 {} 个文件，{} 个文件被覆盖，{} 个文件失败").format(len(files), cover, errors),
                         orient=Qt.Horizontal,
                         isClosable=True,
                         position=InfoBarPosition.BOTTOM_RIGHT,
@@ -168,8 +166,8 @@ class CFGInterface(QWidget):
             selected_items = self.table.selectedItems()
             if selected_items == []:
                 InfoBar.warning(
-                    title='警告',
-                    content="您没有选择任何东西",
+                    title=self.tr('警告'),
+                    content=self.tr("您没有选择任何东西"),
                     orient=Qt.Horizontal,
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
@@ -190,7 +188,7 @@ class CFGInterface(QWidget):
                     continue
                 delete_text += f"{i}\n"
 
-            w = MessageBox("警告", f"此操作将会从磁盘中永久删除下列文件，不可恢复：\n{delete_text}", self)
+            w = MessageBox(self.tr("警告"), self.tr("此操作将会从磁盘中永久删除下列文件，不可恢复：\n{}").format(delete_text), self)
             delete = 0
             if w.exec():
                 for i, a in enumerate(rows_to_delete):
@@ -199,8 +197,8 @@ class CFGInterface(QWidget):
                     delete += 1
 
             InfoBar.warning(
-                title='成功',
-                content=f"共删除 {delete} 个文件，{len(rows_to_delete) - delete} 个文件删除失败",
+                title=self.tr('成功'),
+                content=self.tr("共删除 {} 个文件，{} 个文件删除失败").format(delete, len(rows_to_delete) - delete),
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
@@ -228,8 +226,8 @@ class CFGInterface(QWidget):
                 """
 
             InfoBar.success(
-                title='成功',
-                content="已重新加载本地资源",
+                title=self.tr('成功'),
+                content=self.tr("已重新加载本地资源"),
                 orient=Qt.Horizontal,
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
