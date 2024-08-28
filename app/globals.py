@@ -5,5 +5,5 @@ class GlobalsVal:
     ddnet_setting_config = {}
     ddnet_info = None
     server_list_file = False
-    DDNetToolBoxVersion = "v1.1.1"
+    DDNetToolBoxVersion = "v1.1.2"
     ddnet_folder = cfg.get(cfg.DDNetFolder)
