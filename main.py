@@ -11,8 +11,7 @@ from app.view.main_interface import MainWindow
 if __name__ == '__main__':
     # 初始化目录
     if not os.path.exists(f"{config_path}"):
-        os.mkdir(f"{config_path}")
-        os.mkdir(f"{config_path}/app")
+        os.makedirs(f"{config_path}/app", exist_ok=True)
 
     # 启用DPI
     if cfg.get(cfg.dpiScale) == "Auto":
