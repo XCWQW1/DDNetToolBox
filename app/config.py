@@ -10,7 +10,7 @@ from qfluentwidgets import (qconfig, QConfig, ConfigItem, Theme, OptionsConfigIt
 from app.utils.config_directory import get_ddnet_directory
 
 base_path = os.path.dirname(__file__)
-config_path = platformdirs.user_config_dir("DDNetToolBox")
+config_path = platformdirs.user_config_dir(appname="DDNetToolBox", appauthor="XCWQW233")
 
 
 class Language(Enum):
