@@ -1,13 +1,13 @@
 import datetime
 import requests
 
-from PyQt5.QtGui import QPixmap
 from app.globals import GlobalsVal
 from app.config import cfg, base_path
-from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy, QLabel, \
+    QStackedWidget, QTableWidgetItem, QHeaderView, QAbstractItemView
 from qfluentwidgets import ImageLabel, CardWidget, SubtitleLabel, BodyLabel, HeaderCardWidget, InfoBar, InfoBarPosition, \
-    CaptionLabel, FlowLayout, SingleDirectionScrollArea, setFont
+    CaptionLabel, FlowLayout, SingleDirectionScrollArea, ToolTipFilter, ToolTipPosition, Pivot, TableWidget, SmoothMode
 
 from app.utils.network import ImageLoader
 
@@ -45,8 +45,17 @@ class CheckUpdate(QThread):
 
 
 class TEECard(CardWidget):
-    def __init__(self, name: str, parent=None):
+    ref_status = True
+
+    def __init__(self, name: str, tee_info_ready=None, parent=None):
         super().__init__(parent)
+        self.tee_info_ready = tee_info_ready
+
+        self.setToolTip(self.tr('单击刷新数据'))
+        self.setToolTipDuration(1000)
+        self.installEventFilter(ToolTipFilter(self, showDelay=300, position=ToolTipPosition.BOTTOM))
+
+        self.name = name
         self.hBoxLayout = QHBoxLayout()
         self.vBoxLayout = QVBoxLayout()
 
@@ -83,11 +92,36 @@ class TEECard(CardWidget):
         self.data_loader.finished.connect(self.on_data_loaded)
         self.data_loader.start()
 
+        self.clicked.connect(self.__on_clicked)
+
+    def __on_clicked(self):
+        if self.ref_status:
+            return
+        else:
+            self.ref_status = True
+
+        self.labels[1].setText(self.tr('全球排名：加载中...\n'
+                                       '游戏分数：加载中...\n'
+                                       '游玩时长：加载中...\n'
+                                       '最后完成：加载中...\n'
+                                       '入坑时间：加载中...'))
+
+        self.image_loader = ImageLoader('https://xc.null.red:8043/api/ddnet/draw_player_skin?name={}'.format(self.name))
+        self.image_loader.finished.connect(self.on_image_loaded)
+        self.image_loader.start()
+
+        self.data_loader = TEEDataLoader(self.name)
+        self.data_loader.finished.connect(self.on_data_loaded)
+        self.data_loader.start()
+
     def on_image_loaded(self, pixmap):
         self.iconWidget.setPixmap(pixmap)
         self.iconWidget.scaledToHeight(120)
 
     def on_data_loaded(self, json_data: dict):
+        if self.tee_info_ready is not None:
+            self.tee_info_ready.emit(json_data)
+
         if json_data == {}:
             self.labels[1].setText(self.tr('全球排名：NO.数据获取失败\n'
                                            '游戏分数：数据获取失败/数据获取失败 分\n'
@@ -106,59 +140,108 @@ class TEECard(CardWidget):
                                        '入坑时间：{}').format(json_data["points"]["rank"], json_data["points"]["points"],
                                                              json_data["points"]["total"], use_time,
                                                              json_data["last_finishes"][0]["map"],
-                                                             datetime.datetime.fromtimestamp(
-                                                                 json_data["first_finish"]["timestamp"])))
+                                                             datetime.datetime.fromtimestamp(json_data["first_finish"]["timestamp"])))
+
+        self.ref_status = False
 
 
-class FriendCard(CardWidget):
-    tee_image_size = 50
+class MapStatus(QWidget):
+    tee_data = pyqtSignal(dict)
 
-    def __init__(self, name, parent=None):
+    def __init__(self, map_level: str, parent=None):
         super().__init__(parent)
-        if type(name) == list:
-            name = name[0]
+        self.vBoxLayout = QVBoxLayout(self)
+        self.vBoxLayout.addWidget(SubtitleLabel(map_level))
 
-        self.setFixedSize(168, 50)
+        self.table = TableWidget()
+        self.table.scrollDelagate.verticalSmoothScroll.setSmoothMode(SmoothMode.NO_SMOOTH)
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.table.setBorderRadius(5)
+        self.table.setWordWrap(False)
+        self.table.setColumnCount(7)
+        self.table.setSelectionMode(QAbstractItemView.NoSelection)
+        self.table.verticalHeader().hide()
+        self.table.setHorizontalHeaderLabels([
+            self.tr("地图"),
+            self.tr("分数"),
+            self.tr("队伍排名"),
+            self.tr("全球排名"),
+            self.tr("用时"),
+            self.tr("通关次数"),
+            self.tr("首次完成于")
+        ])
 
-        self.iconWidget = ImageLabel(base_path + '/resource/logo.png', self)
-        self.iconWidget.scaledToHeight(self.tee_image_size)
-        self.label = CaptionLabel(name, self)
+        self.vBoxLayout.addWidget(self.table)
 
-        self.hBoxLayout = QHBoxLayout(self)
-        self.hBoxLayout.setContentsMargins(0, 11, 6, 2)
-        self.hBoxLayout.addWidget(self.iconWidget)
-        self.hBoxLayout.addWidget(self.label, 0, Qt.AlignBottom | Qt.AlignRight)
+        self.tee_data.connect(self.__on_data_loader)
 
-        self.image_loader = ImageLoader('https://xc.null.red:8043/api/ddnet/draw_player_skin?name={}'.format(name))
-        self.image_loader.finished.connect(self.on_image_loaded)
-        self.image_loader.start()
+    def __on_data_loader(self, data):
+        for map_name in data:
+            current_row = self.table.rowCount()
+            self.table.insertRow(current_row)
 
-    def on_image_loaded(self, pixmap):
-        self.iconWidget.setPixmap(pixmap)
-        self.iconWidget.scaledToHeight(self.tee_image_size)
+            first_finish = data[map_name].get('first_finish', None)
+            if first_finish is not None:
+                first_finish = datetime.datetime.fromtimestamp(first_finish)
+            else:
+                first_finish = ''
+
+            team_rank = data[map_name].get('team_rank', None)
+            if team_rank is not None:
+                team_rank = team_rank
+            else:
+                team_rank = ''
+
+            finish_time = data[map_name].get('time', None)
+            if finish_time is not None:
+                finish_time = datetime.timedelta(seconds=finish_time)
+            else:
+                finish_time = ''
+
+            add_item = [
+                map_name,
+                data[map_name].get('points', ''),
+                team_rank,
+                data[map_name].get('rank', ''),
+                finish_time,
+                data[map_name]['finishes'],
+                first_finish
+            ]
+
+            for column, value in enumerate(add_item):
+                item = QTableWidgetItem(str(value))
+                self.table.setItem(current_row, column, item)
 
 
-class FriendList(HeaderCardWidget):
+class TEEInfo(SingleDirectionScrollArea):
+    tee_data = pyqtSignal(dict)
+
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setTitle(self.tr('好友列表'))
+        self.vBoxLayout = QVBoxLayout(self)
+
+        self.noviceWidget = MapStatus(self.tr("Novice"))
+
+        self.vBoxLayout.addWidget(self.noviceWidget)
+
+        self.tee_data.connect(self.__on_data_loader)
+
+    def __on_data_loader(self, data):
+        self.vBoxLayout.addWidget(SubtitleLabel(data['player']))
+        self.noviceWidget.tee_data.emit(data['types']['Novice']['maps'])
+
+
+
+class TEEInfoList(HeaderCardWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.headerLabel.deleteLater()
+        self.headerLabel = Pivot(self)
+        self.headerLabel.setStyleSheet("font-size: 15px;")
 
         self.containerWidget = QWidget()
-        self.fBoxLayout = FlowLayout(self.containerWidget)
-
-        self.batch_size = 1
-        self.current_index = 0
-        try:
-            self.friend_list = GlobalsVal.ddnet_setting_config['add_friend']
-            QTimer.singleShot(0, self.load_friend)
-        except:
-            self.label = SubtitleLabel(self.tr("没有获取到任何数据 T-T"), self)
-            self.hBoxLayout = QHBoxLayout()
-
-            setFont(self.label, 24)
-            self.hBoxLayout.addWidget(self.label, 1, Qt.AlignCenter)
-            self.viewLayout.addLayout(self.hBoxLayout)
-            return
+        self.vBoxLayout = QVBoxLayout(self.containerWidget)
+        self.vBoxLayout.setContentsMargins(0, 0, 0, 0)
 
         self.scrollArea = SingleDirectionScrollArea()
         self.scrollArea.setWidgetResizable(True)
@@ -166,16 +249,25 @@ class FriendList(HeaderCardWidget):
         self.scrollArea.enableTransparentBackground()
 
         self.viewLayout.addWidget(self.scrollArea)
-        self.viewLayout.setContentsMargins(11, 11, 11, 11)
 
-    def load_friend(self):
-        end_index = min(self.current_index + self.batch_size, len(self.friend_list))
-        for i in range(self.current_index, end_index):
-            self.fBoxLayout.addWidget(FriendCard(self.friend_list[i]))
-        self.current_index = end_index
+        self.stackedWidget = QStackedWidget(self)
+        self.stackedWidget.setContentsMargins(0, 0, 0, 0)
 
-        if self.current_index < len(self.friend_list):
-            QTimer.singleShot(0, self.load_friend)
+        self.homePlayerInterface = TEEInfo(self)
+        self.homeDummyInterface = TEEInfo(self)
+
+        self.addSubInterface(self.homePlayerInterface, 'homePlayerInterface', '本体')
+        self.addSubInterface(self.homeDummyInterface, 'homeDummyInterface', '分身')
+
+        self.stackedWidget.setCurrentWidget(self.homePlayerInterface)
+        self.headerLabel.setCurrentItem(self.homePlayerInterface.objectName())
+        self.headerLabel.currentItemChanged.connect(lambda k: self.stackedWidget.setCurrentWidget(self.findChild(QWidget, k)))
+        self.vBoxLayout.addWidget(self.stackedWidget)
+
+    def addSubInterface(self, widget: QLabel, objectName, text):
+        widget.setObjectName(objectName)
+        self.stackedWidget.addWidget(widget)
+        self.headerLabel.addItem(routeKey=objectName, text=text)
 
 
 class HomeInterface(QWidget):
@@ -186,10 +278,13 @@ class HomeInterface(QWidget):
         self.vBoxLayout = QVBoxLayout(self)
         self.hBoxLayout = QHBoxLayout()
 
+        self.teeinfolist = TEEInfoList()
+
+        # Add Layout&widget
         self.vBoxLayout.addLayout(self.hBoxLayout, Qt.AlignTop)
         self.TEECARD(GlobalsVal.ddnet_setting_config.get("player_name", "nameless tee"),
                      GlobalsVal.ddnet_setting_config.get("dummy_name", "[D] nameless te"))
-        self.vBoxLayout.addWidget(FriendList(), Qt.AlignCenter)
+        self.vBoxLayout.addWidget(self.teeinfolist, Qt.AlignCenter)
 
         if cfg.get(cfg.DDNetCheckUpdate):
             self.check_update = CheckUpdate()
@@ -225,6 +320,5 @@ class HomeInterface(QWidget):
             widget = self.hBoxLayout.itemAt(i).widget()
             self.hBoxLayout.removeWidget(widget)
             widget.deleteLater()
-
-        self.hBoxLayout.addWidget(TEECard(player_name), alignment=Qt.AlignTop)
-        self.hBoxLayout.addWidget(TEECard(dummy_name), alignment=Qt.AlignTop)
+        self.hBoxLayout.addWidget(TEECard(player_name, self.teeinfolist.homePlayerInterface.tee_data), alignment=Qt.AlignTop)
+        self.hBoxLayout.addWidget(TEECard(dummy_name, self.teeinfolist.homeDummyInterface.tee_data), alignment=Qt.AlignTop)

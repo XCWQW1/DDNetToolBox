@@ -98,6 +98,18 @@ class SettingInterface(ScrollArea):
 
     def __check_update(self, data=None):
         if data is not None:
+            self.checkUpdate.button.setEnabled(True)
+            if data == {}:
+                InfoBar.error(
+                    title=self.tr('检查更新'),
+                    content=self.tr("无法访问到github"),
+                    orient=Qt.Horizontal,
+                    isClosable=True,
+                    position=InfoBarPosition.BOTTOM_RIGHT,
+                    duration=-1,
+                    parent=self
+                )
+
             if GlobalsVal.DDNetToolBoxVersion != data['tag_name']:
                 InfoBar.warning(
                     title=self.tr('检查更新'),
@@ -120,6 +132,7 @@ class SettingInterface(ScrollArea):
                 )
             return
 
+        self.checkUpdate.button.setEnabled(False)
         InfoBar.info(
             title=self.tr('检查更新'),
             content=self.tr("正在检查更新中..."),

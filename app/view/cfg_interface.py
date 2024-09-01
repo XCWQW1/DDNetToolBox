@@ -5,7 +5,7 @@ from functools import partial
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QTableWidgetItem, QVBoxLayout, QHeaderView, QLabel, QFileDialog
 from qfluentwidgets import TableWidget, CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, MessageBox, \
-    TitleLabel, MessageBoxBase, SubtitleLabel, Dialog, setFont
+    TitleLabel, MessageBoxBase, SubtitleLabel, Dialog, setFont, SmoothMode
 
 from app.config import cfg
 from app.globals import GlobalsVal
@@ -85,7 +85,7 @@ class CFGInterface(QWidget):
         self.addButton(FluentIcon.DELETE, self.tr('删除'), '删除'),
         self.addButton(FluentIcon.SYNC, self.tr('刷新'), '刷新'),
 
-        self.table.setBorderVisible(True)
+        self.table.scrollDelagate.verticalSmoothScroll.setSmoothMode(SmoothMode.NO_SMOOTH)
         self.table.setBorderRadius(5)
         self.table.setWordWrap(False)
         self.table.setColumnCount(2)

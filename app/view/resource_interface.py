@@ -35,6 +35,8 @@ class FileSelectMessageBox(MessageBoxBase):
         self.label = QLabel(self.tr("拖拽文件到此处或点击选择文件"), self)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setStyleSheet("QLabel { border: 2px dashed #aaa; }")
+        self.yesButton.setText(self.tr("确认"))
+        self.cancelButton.setText(self.tr("取消"))
 
         self.setAcceptDrops(True)
 
