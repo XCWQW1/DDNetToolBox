@@ -15,8 +15,8 @@ class CrashApp(QWidget):
     def __init__(self, exc_type, exc_value, exc_traceback):
         super().__init__()
 
+        traceback.print_exception(exc_type, exc_value, exc_traceback)
         error_message = ''.join(traceback.format_exception(exc_type, exc_value, exc_traceback))
-        print(error_message)
 
         dialog = QDialog()
         dialog.setWindowTitle(self.tr("程序崩溃"))
@@ -68,8 +68,8 @@ def init_window():
     Translator = QTranslator()
     CrashTranslator = QTranslator()
 
-    Translator.load(locale, "DDNetToolBox.view", ".", base_path)
-    CrashTranslator.load(locale, "DDNetToolBox.main", ".", base_path)
+    Translator.load(locale, "DDNetToolBox.view", ".", f"{base_path}/resource/i18n")
+    CrashTranslator.load(locale, "DDNetToolBox.main", ".", f"{base_path}/resource/i18n")
 
     app.installTranslator(fluentTranslator)
     app.installTranslator(Translator)

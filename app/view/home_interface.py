@@ -1,13 +1,15 @@
 import datetime
 import requests
+from PyQt5.QtGui import QFont, QPainter, QColor, QPen
 
 from app.globals import GlobalsVal
 from app.config import cfg, base_path
-from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QRect, QSize
 from PyQt5.QtWidgets import QVBoxLayout, QWidget, QHBoxLayout, QSpacerItem, QSizePolicy, QLabel, \
-    QStackedWidget, QTableWidgetItem, QHeaderView, QAbstractItemView
+    QStackedWidget, QTableWidgetItem, QHeaderView, QAbstractItemView, QFrame, QToolTip, QTableWidget
 from qfluentwidgets import ImageLabel, CardWidget, SubtitleLabel, BodyLabel, HeaderCardWidget, InfoBar, InfoBarPosition, \
-    CaptionLabel, FlowLayout, SingleDirectionScrollArea, ToolTipFilter, ToolTipPosition, Pivot, TableWidget, SmoothMode
+    CaptionLabel, FlowLayout, SingleDirectionScrollArea, ToolTipFilter, ToolTipPosition, Pivot, TableWidget, SmoothMode, \
+    ComboBox, StrongBodyLabel, SearchLineEdit
 
 from app.utils.network import ImageLoader
 
@@ -145,22 +147,44 @@ class TEECard(CardWidget):
         self.ref_status = False
 
 
+class CreateTitleContent(QFrame):
+    def __init__(self, title, content, parent=None):
+        super().__init__(parent)
+        self.vBoxLayout = QVBoxLayout(self)
+
+        self.title_label = StrongBodyLabel(title)
+        self.content_label = CaptionLabel(content)
+
+        self.vBoxLayout.addWidget(self.title_label)
+        self.vBoxLayout.addWidget(self.content_label)
+
+
 class MapStatus(QWidget):
     tee_data = pyqtSignal(dict)
 
-    def __init__(self, map_level: str, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
+        self.setMinimumHeight(200)
+
         self.vBoxLayout = QVBoxLayout(self)
-        self.vBoxLayout.addWidget(SubtitleLabel(map_level))
+        self.hBoxLayout = QHBoxLayout()
 
         self.table = TableWidget()
+        self.pointsWidget = CreateTitleContent(self.tr("分数 (共 {} 点)").format('NaN'), self.tr("第 {} 名，共 {} 分").format('NaN', 'NaN'))
+        self.mapsWidget = CreateTitleContent(self.tr("地图 (共 {} 张)").format('NaN'), self.tr("已完成 {} 张，剩余 {} 张未完成").format('NaN', 'NaN'))
+        self.teamRankWidget = CreateTitleContent(self.tr("队伍排名"), "NaN")
+        self.rankWidget = CreateTitleContent(self.tr("全球排名"), "NaN")
+
         self.table.scrollDelagate.verticalSmoothScroll.setSmoothMode(SmoothMode.NO_SMOOTH)
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.table.horizontalHeader().setStretchLastSection(True)
         self.table.setBorderRadius(5)
         self.table.setWordWrap(False)
         self.table.setColumnCount(7)
         self.table.setSelectionMode(QAbstractItemView.NoSelection)
         self.table.verticalHeader().hide()
+        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table.setSortingEnabled(True)
         self.table.setHorizontalHeaderLabels([
             self.tr("地图"),
             self.tr("分数"),
@@ -170,12 +194,53 @@ class MapStatus(QWidget):
             self.tr("通关次数"),
             self.tr("首次完成于")
         ])
+        self.vBoxLayout.setContentsMargins(0, 0, 0, 0)
 
+        self.hBoxLayout.addWidget(self.pointsWidget)
+        self.hBoxLayout.addWidget(self.mapsWidget)
+        self.hBoxLayout.addWidget(self.teamRankWidget)
+        self.hBoxLayout.addWidget(self.rankWidget)
+        self.vBoxLayout.addLayout(self.hBoxLayout)
         self.vBoxLayout.addWidget(self.table)
 
         self.tee_data.connect(self.__on_data_loader)
 
+    def search(self, text=None):
+        if text is None:
+            for i in range(self.table.rowCount()):
+                self.table.setRowHidden(i, False)
+        else:
+            for i in range(self.table.rowCount()):
+                match = False
+                for j in range(self.table.columnCount()):
+                    item = self.table.item(i, j)
+                    if text.lower() in item.text().lower():
+                        match = True
+                        break
+                self.table.setRowHidden(i, not match)
+
     def __on_data_loader(self, data):
+        map_count = len(data['maps'])
+
+        self.table.setRowCount(0)
+
+        self.pointsWidget.title_label.setText(self.tr("分数 (共 {} 点)").format(data['points']['total']))
+        if data['points']['rank'] is None:
+            self.pointsWidget.content_label.setText(self.tr("未排名"))
+        else:
+            self.pointsWidget.content_label.setText(self.tr("第 {} 名，共 {} 分").format(data['points'].get('rank', '0'), data['points'].get('points', '0')))
+
+        self.mapsWidget.title_label.setText(self.tr("地图 (共 {} 张)").format(map_count))
+
+        self.team_rank = data.get('team_rank', {}).get('rank', self.tr("未排名"))
+        self.teamRankWidget.content_label.setText(self.tr("未排名") if self.team_rank is None else self.team_rank)
+
+        self.rank_text = data.get('rank', {}).get('rank', self.tr("未排名"))
+        self.rankWidget.content_label.setText(self.tr("未排名") if self.rank_text is None else self.rank_text)
+
+        data = data['maps']
+        finish_map = 0
+
         for map_name in data:
             current_row = self.table.rowCount()
             self.table.insertRow(current_row)
@@ -183,6 +248,7 @@ class MapStatus(QWidget):
             first_finish = data[map_name].get('first_finish', None)
             if first_finish is not None:
                 first_finish = datetime.datetime.fromtimestamp(first_finish)
+                finish_map += 1
             else:
                 first_finish = ''
 
@@ -194,7 +260,7 @@ class MapStatus(QWidget):
 
             finish_time = data[map_name].get('time', None)
             if finish_time is not None:
-                finish_time = datetime.timedelta(seconds=finish_time)
+                finish_time = datetime.timedelta(seconds=int(finish_time))
             else:
                 finish_time = ''
 
@@ -212,29 +278,91 @@ class MapStatus(QWidget):
                 item = QTableWidgetItem(str(value))
                 self.table.setItem(current_row, column, item)
 
+        self.mapsWidget.content_label.setText(self.tr("已完成 {} 张，剩余 {} 张未完成").format(finish_map, map_count - finish_map))
 
-class TEEInfo(SingleDirectionScrollArea):
+class TEEInfo(QWidget):
     tee_data = pyqtSignal(dict)
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.vBoxLayout = QVBoxLayout(self)
+        self.hBoxLayout = QHBoxLayout()
+        self.comboBox = ComboBox()
+        self.stackedWidget = QStackedWidget()
+        self.searchLine = SearchLineEdit()
 
-        self.noviceWidget = MapStatus(self.tr("Novice"))
+        self.stackedWidget.setContentsMargins(0, 0, 0, 0)
 
-        self.vBoxLayout.addWidget(self.noviceWidget)
+        self.NoviceWidget = MapStatus()
+        self.ModerateWidget = MapStatus()
+        self.BrutalWidget = MapStatus()
+        self.InsaneWidget = MapStatus()
+        self.DummyWidget = MapStatus()
+        self.DDmaXEasyWidget = MapStatus()
+        self.DDmaXNextWidget = MapStatus()
+        self.DDmaXProWidget = MapStatus()
+        self.DDmaXNutWidget = MapStatus()
+        self.OldschoolWidget = MapStatus()
+        self.SoloWidget = MapStatus()
+        self.RaceWidget = MapStatus()
+        self.FunWidget = MapStatus()
+
+        self.addSubInterface(self.NoviceWidget, self.tr("Novice 简单"))
+        self.addSubInterface(self.ModerateWidget, self.tr("Moderate 中阶"))
+        self.addSubInterface(self.BrutalWidget, self.tr("Brutal 高阶"))
+        self.addSubInterface(self.InsaneWidget, self.tr("Insane 疯狂"))
+        self.addSubInterface(self.DummyWidget, self.tr("Dummy 分身"))
+        self.addSubInterface(self.DDmaXEasyWidget, self.tr("DDmaX.Easy 古典.简单"))
+        self.addSubInterface(self.DDmaXNextWidget, self.tr("DDmaX.Next 古典.中阶"))
+        self.addSubInterface(self.DDmaXProWidget, self.tr("DDmaX.Pro 古典.高阶"))
+        self.addSubInterface(self.DDmaXNutWidget, self.tr("DDmaX.Nut 古典.坚果"))
+        self.addSubInterface(self.OldschoolWidget, self.tr("Oldschool 传统"))
+        self.addSubInterface(self.SoloWidget, self.tr("Solo 单人"))
+        self.addSubInterface(self.RaceWidget, self.tr("Race 竞速"))
+        self.addSubInterface(self.FunWidget, self.tr("Fun 娱乐"))
+
+        self.stackedWidget.setCurrentWidget(self.NoviceWidget)
+        self.comboBox.currentIndexChanged.connect(lambda k: self.stackedWidget.setCurrentIndex(k))
+        self.searchLine.setPlaceholderText(self.tr("搜点什么..."))
+
+        self.hBoxLayout.addWidget(self.comboBox)
+        self.hBoxLayout.addWidget(self.searchLine)
+        self.vBoxLayout.addLayout(self.hBoxLayout)
+        self.vBoxLayout.addWidget(self.stackedWidget)
 
         self.tee_data.connect(self.__on_data_loader)
+        self.searchLine.returnPressed.connect(self.searchLine.search)
+        self.searchLine.searchSignal.connect(lambda text=None:self.stackedWidget.currentWidget().search(text))
+        self.searchLine.clearSignal.connect(lambda text=None:self.stackedWidget.currentWidget().search(text))
+
+    def addSubInterface(self, widget: QLabel, text):
+        self.stackedWidget.addWidget(widget)
+        self.comboBox.addItem(text)
 
     def __on_data_loader(self, data):
-        self.vBoxLayout.addWidget(SubtitleLabel(data['player']))
-        self.noviceWidget.tee_data.emit(data['types']['Novice']['maps'])
+        if data == {}:
+            return
 
+        self.NoviceWidget.tee_data.emit(data['types']['Novice'])
+        self.ModerateWidget.tee_data.emit(data['types']['Moderate'])
+        self.BrutalWidget.tee_data.emit(data['types']['Brutal'])
+        self.InsaneWidget.tee_data.emit(data['types']['Insane'])
+        self.DummyWidget.tee_data.emit(data['types']['Dummy'])
+        self.DDmaXEasyWidget.tee_data.emit(data['types']['DDmaX.Easy'])
+        self.DDmaXNextWidget.tee_data.emit(data['types']['DDmaX.Next'])
+        self.DDmaXProWidget.tee_data.emit(data['types']['DDmaX.Pro'])
+        self.DDmaXNutWidget.tee_data.emit(data['types']['DDmaX.Nut'])
+        self.OldschoolWidget.tee_data.emit(data['types']['Oldschool'])
+        self.SoloWidget.tee_data.emit(data['types']['Solo'])
+        self.RaceWidget.tee_data.emit(data['types']['Race'])
+        self.FunWidget.tee_data.emit(data['types']['Fun'])
 
 
 class TEEInfoList(HeaderCardWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.viewLayout.setContentsMargins(0, 0, 0, 0)
+
         self.headerLabel.deleteLater()
         self.headerLabel = Pivot(self)
         self.headerLabel.setStyleSheet("font-size: 15px;")
@@ -256,8 +384,8 @@ class TEEInfoList(HeaderCardWidget):
         self.homePlayerInterface = TEEInfo(self)
         self.homeDummyInterface = TEEInfo(self)
 
-        self.addSubInterface(self.homePlayerInterface, 'homePlayerInterface', '本体')
-        self.addSubInterface(self.homeDummyInterface, 'homeDummyInterface', '分身')
+        self.addSubInterface(self.homePlayerInterface, 'homePlayerInterface', self.tr('本体'))
+        self.addSubInterface(self.homeDummyInterface, 'homeDummyInterface', self.tr('分身'))
 
         self.stackedWidget.setCurrentWidget(self.homePlayerInterface)
         self.headerLabel.setCurrentItem(self.homePlayerInterface.objectName())

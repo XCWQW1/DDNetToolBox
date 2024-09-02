@@ -1,4 +1,6 @@
 import os
+import platform
+import subprocess
 
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QIcon
@@ -7,7 +9,7 @@ from qfluentwidgets import (OptionsSettingCard, ScrollArea, ExpandLayout, Fluent
                             CaptionLabel, qconfig, CustomColorSettingCard, setThemeColor, InfoBarPosition,
                             ComboBoxSettingCard)
 from PyQt5.QtWidgets import QWidget, QFileDialog
-from app.config import cfg, base_path
+from app.config import cfg, base_path, config_path
 from app.globals import GlobalsVal
 from app.utils.network import JsonLoader
 
@@ -94,7 +96,25 @@ class SettingInterface(ScrollArea):
         )
         self.checkUpdate.clicked.connect(self.__check_update)
 
+        self.openConfigFolder = PrimaryPushSettingCard(
+            text=self.tr("打开目录"),
+            icon=FluentIcon.FOLDER,
+            title=self.tr("工具箱配置目录"),
+            content=self.tr("打开工具箱配置文件所在目录")
+        )
+        self.openConfigFolder.clicked.connect(lambda: self.open_folder(config_path))
+
         self.__initWidget()
+
+    @staticmethod
+    def open_folder(directory_path):
+        if platform.system() == "Windows":
+            os.startfile(directory_path)
+        elif platform.system() == "Darwin":
+            subprocess.run(["open", directory_path])
+        else:
+            subprocess.run(["xdg-open", directory_path])
+
 
     def __check_update(self, data=None):
         if data is not None:
@@ -175,6 +195,7 @@ class SettingInterface(ScrollArea):
         self.personalGroup.addSettingCard(self.zoomCard)
         self.personalGroup.addSettingCard(self.languageCard)
         self.otherGroup.addSettingCard(self.checkUpdate)
+        self.otherGroup.addSettingCard(self.openConfigFolder)
 
         self.expandLayout.addWidget(self.DDNetGroup)
         self.expandLayout.addWidget(self.personalGroup)
