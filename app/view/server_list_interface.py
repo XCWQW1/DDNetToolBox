@@ -4,7 +4,7 @@ from functools import partial
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QHBoxLayout, QTableWidgetItem, QVBoxLayout, QHeaderView, QLabel
 from qfluentwidgets import TableWidget, CommandBar, Action, FluentIcon, InfoBar, InfoBarPosition, MessageBox, \
-    TitleLabel, SubtitleLabel, setFont
+    TitleLabel, SubtitleLabel, setFont, SmoothMode
 
 from app.config import cfg
 from app.globals import GlobalsVal
@@ -39,7 +39,7 @@ class ServerListInterface(QWidget):
         self.addButton(FluentIcon.SPEED_HIGH, self.tr('一键加速'), '一键加速'),
 
         self.table = TableWidget(self)
-        self.table.setBorderVisible(True)
+        self.table.scrollDelagate.verticalSmoothScroll.setSmoothMode(SmoothMode.NO_SMOOTH)
         self.table.setBorderRadius(5)
         self.table.setWordWrap(False)
         self.table.setColumnCount(1)

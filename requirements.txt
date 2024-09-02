@@ -6,3 +6,4 @@ requests
 nuitka
 Pillow
 platformdirs
+PyQt-Fluent-Widgets[full]
