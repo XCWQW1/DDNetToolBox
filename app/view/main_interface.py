@@ -26,6 +26,7 @@ class MainWindow(FluentWindow):
 
         # 延迟初始化子界面
         self.homeInterface = None
+        self.PlayerPointInterface = None
         self.CFGInterface = None
         self.ResourceInterface = None
         self.ServerListMirrorInterface = None
@@ -93,6 +94,7 @@ class MainWindow(FluentWindow):
     def initNavigation(self):
         """初始化子页面"""
         self.addSubInterface(self.get_home_interface(), FIF.HOME, self.tr('首页'))
+        self.addSubInterface(self.get_player_point_interface(), FIF.SEARCH, self.tr('玩家分数查询'))
         self.addSubInterface(self.get_CFG_interface(), FIF.APPLICATION, self.tr('CFG管理'))
         self.addSubInterface(self.get_resource_interface(), FIF.EMOJI_TAB_SYMBOLS, self.tr('材质管理'))
         self.addSubInterface(self.get_server_list_mirror_interface(), FIF.LIBRARY, self.tr('服务器列表管理'))
@@ -106,6 +108,12 @@ class MainWindow(FluentWindow):
             from app.view.home_interface import HomeInterface
             self.homeInterface = HomeInterface()
         return self.homeInterface
+
+    def get_player_point_interface(self):
+        if self.PlayerPointInterface is None:
+            from app.view.player_point_interface import PlayerPointInterface
+            self.PlayerPointInterface = PlayerPointInterface()
+        return self.PlayerPointInterface
 
     def get_CFG_interface(self):
         if self.CFGInterface is None:

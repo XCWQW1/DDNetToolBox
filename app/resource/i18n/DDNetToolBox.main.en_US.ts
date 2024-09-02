@@ -126,17 +126,17 @@ A total of {} files were copied, {} files were overwritten, and {} files failed<
 <context>
     <name>HomeInterface</name>
     <message>
-        <location filename="../../view/home_interface.py" line="435"/>
+        <location filename="../../view/home_interface.py" line="463"/>
         <source>DDNet 版本检测</source>
         <translation>DDNet version detection</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="424"/>
+        <location filename="../../view/home_interface.py" line="452"/>
         <source>无法连接到DDNet官网</source>
         <translation>Unable to connect to DDNet official website</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="435"/>
+        <location filename="../../view/home_interface.py" line="463"/>
         <source>您当前的DDNet版本为 {} 最新版本为 {} 请及时更新</source>
         <translation>Your current DDNet version is {} The latest version is {} Please update in time</translation>
     </message>
@@ -144,92 +144,110 @@ A total of {} files were copied, {} files were overwritten, and {} files failed<
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../view/main_interface.py" line="95"/>
+        <location filename="../../view/main_interface.py" line="96"/>
         <source>首页</source>
         <translation>Home</translation>
     </message>
     <message>
-        <location filename="../../view/main_interface.py" line="96"/>
+        <location filename="../../view/main_interface.py" line="98"/>
         <source>CFG管理</source>
         <translation>CFG Management</translation>
     </message>
     <message>
-        <location filename="../../view/main_interface.py" line="97"/>
+        <location filename="../../view/main_interface.py" line="99"/>
         <source>材质管理</source>
         <translation>Material Management</translation>
     </message>
     <message>
-        <location filename="../../view/main_interface.py" line="98"/>
+        <location filename="../../view/main_interface.py" line="100"/>
         <source>服务器列表管理</source>
         <translation>Server List Management</translation>
     </message>
     <message>
-        <location filename="../../view/main_interface.py" line="102"/>
+        <location filename="../../view/main_interface.py" line="104"/>
         <source>设置</source>
         <translation>Settings</translation>
+    </message>
+    <message>
+        <location filename="../../view/main_interface.py" line="97"/>
+        <source>玩家分数查询</source>
+        <translation>Player score query</translation>
     </message>
 </context>
 <context>
     <name>MapStatus</name>
     <message>
-        <location filename="../../view/home_interface.py" line="188"/>
+        <location filename="../../view/home_interface.py" line="198"/>
         <source>地图</source>
         <translation>Map</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="188"/>
+        <location filename="../../view/home_interface.py" line="198"/>
         <source>分数</source>
         <translation>Points</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="188"/>
+        <location filename="../../view/home_interface.py" line="198"/>
         <source>队伍排名</source>
         <translation>Team Rank</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="188"/>
+        <location filename="../../view/home_interface.py" line="198"/>
         <source>全球排名</source>
         <translation>Rank</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="188"/>
+        <location filename="../../view/home_interface.py" line="198"/>
         <source>用时</source>
         <translation>Time</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="188"/>
+        <location filename="../../view/home_interface.py" line="198"/>
         <source>通关次数</source>
         <translation>Finishes</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="188"/>
+        <location filename="../../view/home_interface.py" line="198"/>
         <source>首次完成于</source>
         <translation>First Finish</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="227"/>
+        <location filename="../../view/home_interface.py" line="237"/>
         <source>分数 (共 {} 点)</source>
         <translation>Points ({} total)</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="239"/>
+        <location filename="../../view/home_interface.py" line="249"/>
         <source>未排名</source>
         <translation>Unranked</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="231"/>
+        <location filename="../../view/home_interface.py" line="241"/>
         <source>第 {} 名，共 {} 分</source>
         <translation>{}. with {} points</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="233"/>
+        <location filename="../../view/home_interface.py" line="243"/>
         <source>地图 (共 {} 张)</source>
         <translation>Maps ({} total)</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="281"/>
+        <location filename="../../view/home_interface.py" line="291"/>
         <source>已完成 {} 张，剩余 {} 张未完成</source>
         <translation>{} completed, {} unfinished</translation>
+    </message>
+</context>
+<context>
+    <name>PlayerPointInterface</name>
+    <message>
+        <location filename="../../view/player_point_interface.py" line="138"/>
+        <source>填写要查询的玩家名称</source>
+        <translation>Enter the name of the player to be queried</translation>
+    </message>
+    <message>
+        <location filename="../../view/player_point_interface.py" line="139"/>
+        <source>填写要比较的玩家名称</source>
+        <translation>Enter the name of the player to compare</translation>
     </message>
 </context>
 <context>
@@ -632,7 +650,7 @@ Please manually specify the DDNet configuration directory in the settings.</tran
 <context>
     <name>TEECard</name>
     <message>
-        <location filename="../../view/home_interface.py" line="105"/>
+        <location filename="../../view/home_interface.py" line="108"/>
         <source>全球排名：加载中...
 游戏分数：加载中...
 游玩时长：加载中...
@@ -645,106 +663,119 @@ Last Completed: Loading...
 Join Date: Loading...</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="128"/>
-        <source>全球排名：NO.数据获取失败
-游戏分数：数据获取失败/数据获取失败 分
-游玩时长：数据获取失败 小时
-最后完成：数据获取失败
-入坑时间：数据获取失败</source>
-        <translation>Rank: NO. Data Retrieval Failed
-Points: Data Retrieval Failed / Data Retrieval Failed Points
-Playtime: Data Retrieval Failed
-Last Completed: Data Retrieval Failed
-Join Date: Data Retrieval Failed</translation>
-    </message>
-    <message>
-        <location filename="../../view/home_interface.py" line="138"/>
+        <location filename="../../view/home_interface.py" line="148"/>
         <source>全球排名：NO.{}
 游戏分数：{}/{} 分
 游玩时长：{} 小时
 最后完成：{}
 入坑时间：{}</source>
-        <translation>Rank: NO. {}
+        <translation>Rank: No. {}
 Points: {}/{} Points
 Playtime: {} Hours
 Last Completed: {}
 Join Date: {}</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="56"/>
+        <location filename="../../view/home_interface.py" line="59"/>
         <source>单击刷新数据</source>
         <translation>Click Refresh Data</translation>
+    </message>
+    <message>
+        <location filename="../../view/home_interface.py" line="138"/>
+        <source>全球排名：NO.数据获取失败
+游戏分数：数据获取失败 分
+游玩时长：数据获取失败 小时
+最后完成：数据获取失败
+入坑时间：数据获取失败</source>
+        <translation>Rank: No. Data Retrieval Failed
+Points: Data Retrieval Failed Points
+Playtime: Data Retrieval Failed Hours
+Last Completed: Data Retrieval Failed
+Join Date: Data Retrieval Failed</translation>
+    </message>
+    <message>
+        <location filename="../../view/home_interface.py" line="132"/>
+        <source>全球排名：NO.查无此人
+游戏分数：查无此人 分
+游玩时长：查无此人 小时
+最后完成：查无此人
+入坑时间：查无此人</source>
+        <translation>Rank: No. No such person
+Points: No such person Points
+Playtime: No such person Hours
+Last Completed: No such person
+Join Date: No such person</translation>
     </message>
 </context>
 <context>
     <name>TEEInfo</name>
     <message>
-        <location filename="../../view/home_interface.py" line="310"/>
+        <location filename="../../view/home_interface.py" line="320"/>
         <source>Novice 简单</source>
         <translation>Novice</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="311"/>
+        <location filename="../../view/home_interface.py" line="321"/>
         <source>Moderate 中阶</source>
         <translation>Moderate</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="312"/>
+        <location filename="../../view/home_interface.py" line="322"/>
         <source>Brutal 高阶</source>
         <translation>Brutal</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="313"/>
+        <location filename="../../view/home_interface.py" line="323"/>
         <source>Insane 疯狂</source>
         <translation>Insane</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="314"/>
+        <location filename="../../view/home_interface.py" line="324"/>
         <source>Dummy 分身</source>
         <translation>Dummy</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="315"/>
+        <location filename="../../view/home_interface.py" line="325"/>
         <source>DDmaX.Easy 古典.简单</source>
         <translation>DDmaX.Easy</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="316"/>
+        <location filename="../../view/home_interface.py" line="326"/>
         <source>DDmaX.Next 古典.中阶</source>
         <translation>DDmaX.Next</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="317"/>
+        <location filename="../../view/home_interface.py" line="327"/>
         <source>DDmaX.Pro 古典.高阶</source>
         <translation>DDmaX.Pro</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="318"/>
+        <location filename="../../view/home_interface.py" line="328"/>
         <source>DDmaX.Nut 古典.坚果</source>
         <translation>DDmaX.Nut</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="319"/>
+        <location filename="../../view/home_interface.py" line="329"/>
         <source>Oldschool 传统</source>
         <translation>Oldschool</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="320"/>
+        <location filename="../../view/home_interface.py" line="330"/>
         <source>Solo 单人</source>
         <translation>Solo</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="321"/>
+        <location filename="../../view/home_interface.py" line="331"/>
         <source>Race 竞速</source>
         <translation>Race</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="322"/>
+        <location filename="../../view/home_interface.py" line="332"/>
         <source>Fun 娱乐</source>
         <translation>Fun</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="326"/>
+        <location filename="../../view/home_interface.py" line="336"/>
         <source>搜点什么...</source>
         <translation>Search for something...</translation>
     </message>
@@ -752,14 +783,87 @@ Join Date: {}</translation>
 <context>
     <name>TEEInfoList</name>
     <message>
-        <location filename="../../view/home_interface.py" line="387"/>
+        <location filename="../../view/home_interface.py" line="404"/>
         <source>本体</source>
         <translation>Player</translation>
     </message>
     <message>
-        <location filename="../../view/home_interface.py" line="388"/>
+        <location filename="../../view/home_interface.py" line="405"/>
         <source>分身</source>
         <translation>Dummy</translation>
+    </message>
+</context>
+<context>
+    <name>TEERankCard</name>
+    <message>
+        <location filename="../../view/player_point_interface.py" line="22"/>
+        <source>单击刷新数据</source>
+        <translation>Click Refresh Data</translation>
+    </message>
+    <message>
+        <location filename="../../view/player_point_interface.py" line="68"/>
+        <source>全球排名：加载中...
+游戏分数：加载中...
+游玩时长：加载中...
+最后完成：加载中...
+入坑时间：加载中...</source>
+        <translation>Global Ranking: Loading...
+Game Score: Loading...
+Playtime: Loading...
+Last Completed: Loading...
+Join Date: Loading...</translation>
+    </message>
+    <message>
+        <location filename="../../view/player_point_interface.py" line="98"/>
+        <source>全球排名：NO.数据获取失败
+游戏分数：数据获取失败 分
+游玩时长：数据获取失败 小时
+最后完成：数据获取失败
+入坑时间：数据获取失败</source>
+        <translation>Rank: No. Data Retrieval Failed
+Points: Data Retrieval Failed Points
+Playtime: Data Retrieval Failed Hours
+Last Completed: Data Retrieval Failed
+Join Date: Data Retrieval Failed</translation>
+    </message>
+    <message>
+        <location filename="../../view/player_point_interface.py" line="112"/>
+        <source>全球排名：NO.{}
+游戏分数：{}/{} 分
+游玩时长：{} 小时
+最后完成：{}
+入坑时间：{}</source>
+        <translation>Rank: No. {}
+Points: {}/{} Points
+Playtime: {} Hours
+Last Completed: {}
+Join Date: {}</translation>
+    </message>
+    <message>
+        <location filename="../../view/player_point_interface.py" line="32"/>
+        <source>全球排名：NaN
+游戏分数：NaN
+游玩时长：NaN
+最后完成：NaN
+入坑时间：NaN</source>
+        <translation>Rank: No. NaN
+Points: NaN Points
+Playtime: NaN Hours
+Last Completed: NaN
+Join Date: NaN</translation>
+    </message>
+    <message>
+        <location filename="../../view/player_point_interface.py" line="92"/>
+        <source>全球排名：NO.查无此人
+游戏分数：查无此人 分
+游玩时长：查无此人 小时
+最后完成：查无此人
+入坑时间：查无此人</source>
+        <translation>Rank: No. No such person
+Points: No such person Points
+Playtime: No such person Hours
+Last Completed: No such person
+Join Date: No such person</translation>
     </message>
 </context>
 </TS>

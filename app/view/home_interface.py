@@ -24,9 +24,12 @@ class TEEDataLoader(QThread):
     def run(self):
         try:
             response = requests.get('https://ddnet.org/players/?json2={}'.format(self.name))
-            self.finished.emit(response.json())
+            if response.json() == {}:
+                self.finished.emit({"error": "NoData"})
+            else:
+                self.finished.emit(response.json())
         except:
-            self.finished.emit({})
+            self.finished.emit({"error": "InternetError"})
 
 
 class CheckUpdate(QThread):
@@ -124,12 +127,19 @@ class TEECard(CardWidget):
         if self.tee_info_ready is not None:
             self.tee_info_ready.emit(json_data)
 
-        if json_data == {}:
-            self.labels[1].setText(self.tr('全球排名：NO.数据获取失败\n'
-                                           '游戏分数：数据获取失败/数据获取失败 分\n'
-                                           '游玩时长：数据获取失败 小时\n'
-                                           '最后完成：数据获取失败\n'
-                                           '入坑时间：数据获取失败'))
+        if 'error' in json_data:
+            if json_data['error'] == "NoData":
+                self.labels[1].setText(self.tr('全球排名：NO.查无此人\n'
+                                               '游戏分数：查无此人 分\n'
+                                               '游玩时长：查无此人 小时\n'
+                                               '最后完成：查无此人\n'
+                                               '入坑时间：查无此人'))
+            else:
+                self.labels[1].setText(self.tr('全球排名：NO.数据获取失败\n'
+                                               '游戏分数：数据获取失败 分\n'
+                                               '游玩时长：数据获取失败 小时\n'
+                                               '最后完成：数据获取失败\n'
+                                               '入坑时间：数据获取失败'))
             return
         use_time = 0
         for time in json_data['activity']:
@@ -233,10 +243,10 @@ class MapStatus(QWidget):
         self.mapsWidget.title_label.setText(self.tr("地图 (共 {} 张)").format(map_count))
 
         self.team_rank = data.get('team_rank', {}).get('rank', self.tr("未排名"))
-        self.teamRankWidget.content_label.setText(self.tr("未排名") if self.team_rank is None else self.team_rank)
+        self.teamRankWidget.content_label.setText(self.tr("未排名") if self.team_rank is None else str(self.team_rank))
 
         self.rank_text = data.get('rank', {}).get('rank', self.tr("未排名"))
-        self.rankWidget.content_label.setText(self.tr("未排名") if self.rank_text is None else self.rank_text)
+        self.rankWidget.content_label.setText(self.tr("未排名") if self.rank_text is None else str(self.rank_text))
 
         data = data['maps']
         finish_map = 0
@@ -359,7 +369,10 @@ class TEEInfo(QWidget):
 
 
 class TEEInfoList(HeaderCardWidget):
-    def __init__(self, parent=None):
+    title_player_name = pyqtSignal(dict)
+    title_dummy_name = pyqtSignal(dict)
+
+    def __init__(self, on_data: bool=False, parent=None):
         super().__init__(parent)
         self.viewLayout.setContentsMargins(0, 0, 0, 0)
 
@@ -384,13 +397,28 @@ class TEEInfoList(HeaderCardWidget):
         self.homePlayerInterface = TEEInfo(self)
         self.homeDummyInterface = TEEInfo(self)
 
-        self.addSubInterface(self.homePlayerInterface, 'homePlayerInterface', self.tr('本体'))
-        self.addSubInterface(self.homeDummyInterface, 'homeDummyInterface', self.tr('分身'))
+        if on_data:
+            self.addSubInterface(self.homePlayerInterface, 'homePlayerInterface', "NaN")
+            self.addSubInterface(self.homeDummyInterface, 'homeDummyInterface', "NaN")
+        else:
+            self.addSubInterface(self.homePlayerInterface, 'homePlayerInterface', self.tr('本体'))
+            self.addSubInterface(self.homeDummyInterface, 'homeDummyInterface', self.tr('分身'))
 
         self.stackedWidget.setCurrentWidget(self.homePlayerInterface)
         self.headerLabel.setCurrentItem(self.homePlayerInterface.objectName())
         self.headerLabel.currentItemChanged.connect(lambda k: self.stackedWidget.setCurrentWidget(self.findChild(QWidget, k)))
         self.vBoxLayout.addWidget(self.stackedWidget)
+
+        self.title_player_name.connect(self.__changePlayerTitle)
+        self.title_dummy_name.connect(self.__changeDummyTitle)
+
+    def __changePlayerTitle(self, data):
+        self.headerLabel.items['homePlayerInterface'].setText(data['player'])
+        self.homePlayerInterface.tee_data.emit(data)
+
+    def __changeDummyTitle(self, data):
+        self.headerLabel.items['homeDummyInterface'].setText(data['player'])
+        self.homeDummyInterface.tee_data.emit(data)
 
     def addSubInterface(self, widget: QLabel, objectName, text):
         widget.setObjectName(objectName)
