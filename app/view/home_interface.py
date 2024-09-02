@@ -350,7 +350,7 @@ class TEEInfo(QWidget):
         self.comboBox.addItem(text)
 
     def __on_data_loader(self, data):
-        if data == {}:
+        if data == {} or not "types" in data:
             return
 
         self.NoviceWidget.tee_data.emit(data['types']['Novice'])
