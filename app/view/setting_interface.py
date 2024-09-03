@@ -7,10 +7,11 @@ from PyQt5.QtGui import QIcon
 from qfluentwidgets import (OptionsSettingCard, ScrollArea, ExpandLayout, FluentIcon, SettingCardGroup, setTheme,
                             InfoBar, isDarkTheme, Theme, PushSettingCard, SwitchSettingCard, PrimaryPushSettingCard,
                             CaptionLabel, qconfig, CustomColorSettingCard, setThemeColor, InfoBarPosition,
-                            ComboBoxSettingCard)
-from PyQt5.QtWidgets import QWidget, QFileDialog
+                            ComboBoxSettingCard, PushButton)
+from PyQt5.QtWidgets import QWidget, QFileDialog, QPushButton
 from app.config import cfg, base_path, config_path
 from app.globals import GlobalsVal
+from app.utils.config_directory import get_ddnet_directory
 from app.utils.network import JsonLoader
 
 
@@ -35,6 +36,9 @@ class SettingInterface(ScrollArea):
             cfg.get(cfg.DDNetFolder),
             self.DDNetGroup
         )
+        self.DDNetFolderButton = QPushButton('自动寻找', self.DDNetFolder)
+        self.DDNetFolder.hBoxLayout.addWidget(self.DDNetFolderButton, 0, Qt.AlignRight)
+        self.DDNetFolder.hBoxLayout.addSpacing(16)
 
         self.DDNetCheckUpdate = SwitchSettingCard(
             FluentIcon.UPDATE,
@@ -207,6 +211,7 @@ class SettingInterface(ScrollArea):
             self.tr('成功'),
             self.tr('重启以应用更改'),
             duration=1500,
+            position=InfoBarPosition.BOTTOM_RIGHT,
             parent=self
         )
 
@@ -241,7 +246,31 @@ class SettingInterface(ScrollArea):
         cfg.appRestartSig.connect(self.__showRestartTooltip)
         cfg.themeChanged.connect(self.__onThemeChanged)
 
+        self.DDNetFolderButton.clicked.connect(self.__FindDDNetFolder)
         self.DDNetFolder.clicked.connect(self.__onDDNetFolderCardClicked)
         self.DDNetFolder.clicked.connect(self.__onDDNetFolderChanged)
         self.themeCard.optionChanged.connect(lambda ci: setTheme(cfg.get(ci)))
         self.themeColorCard.colorChanged.connect(setThemeColor)
+
+
+    def __FindDDNetFolder(self):
+        folder = get_ddnet_directory()
+        if folder != "./":
+            cfg.set(cfg.DDNetFolder, folder)
+            self.DDNetFolder.contentLabel.setText(folder)
+            InfoBar.success(
+                self.tr('成功'),
+                self.tr('识别到的DDNet配置文件夹为：{}').format(folder),
+                duration=1500,
+                parent=self,
+                position=InfoBarPosition.BOTTOM_RIGHT,
+            )
+            self.__showRestartTooltip()
+        else:
+            InfoBar.error(
+                self.tr('错误'),
+                self.tr('没有找到DDNet配置文件夹'),
+                duration=1500,
+                position=InfoBarPosition.BOTTOM_RIGHT,
+                parent=self
+            )

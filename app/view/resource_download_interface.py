@@ -204,7 +204,7 @@ class ResourceDownloadInterface(QWidget):
         super().__init__(parent)
         self.setObjectName("ResourceDownloadInterface")
 
-        if os.path.abspath(GlobalsVal.ddnet_folder) == os.path.abspath(os.getcwd()):
+        if not GlobalsVal.ddnet_folder_status:
             self.label = SubtitleLabel("我们的程序无法自动找到DDNet配置目录\n请手动到设置中指定DDNet配置目录", self)
             self.hBoxLayout = QHBoxLayout(self)
 

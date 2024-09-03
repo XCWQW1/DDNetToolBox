@@ -413,11 +413,11 @@ class TEEInfoList(HeaderCardWidget):
         self.title_dummy_name.connect(self.__changeDummyTitle)
 
     def __changePlayerTitle(self, data):
-        self.headerLabel.items['homePlayerInterface'].setText(data['player'])
+        self.headerLabel.items['homePlayerInterface'].setText(data.get("player", "NaN"))
         self.homePlayerInterface.tee_data.emit(data)
 
     def __changeDummyTitle(self, data):
-        self.headerLabel.items['homeDummyInterface'].setText(data['player'])
+        self.headerLabel.items['homeDummyInterface'].setText(data.get("player", "NaN"))
         self.homeDummyInterface.tee_data.emit(data)
 
     def addSubInterface(self, widget: QLabel, objectName, text):

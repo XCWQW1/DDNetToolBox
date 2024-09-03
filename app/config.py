@@ -39,7 +39,7 @@ class Config(QConfig):
         "个性化", "DpiScale", "Auto", OptionsValidator([1, 1.25, 1.5, 1.75, 2, "Auto"]), restart=True)
     themeColor = ColorConfigItem("个性化", "ThemeColor", "#009faa")
     language = OptionsConfigItem("个性化", "Language", Language.AUTO, OptionsValidator(Language), LanguageSerializer(), restart=True)
-    DDNetFolder = ConfigItem("DDNet", "DDNetFolder", get_ddnet_directory(), FolderValidator())
+    DDNetFolder = ConfigItem("DDNet", "DDN1etFolder", get_ddnet_directory(), FolderValidator())
     DDNetCheckUpdate = ConfigItem("DDNet", "DDNetCheckUpdate", True, BoolValidator())
     DDNetAssetsCursor = ConfigItem("DDNet", "DDNetAssetsCursor", None)
 
