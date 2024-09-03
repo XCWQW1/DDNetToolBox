@@ -30,6 +30,7 @@ English | <a href="README_zh.md">简体中文</a>
 ### Software Screenshots
 
 ![front_page](images/en/home.png)
+![points](images/en/points.png)
 ![sidebar](images/en/home_tab.png)
 ![cfg_management](images/en/cfg.png)
 ![resource_management](images/en/resouces.png)

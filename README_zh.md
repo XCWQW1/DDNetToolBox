@@ -31,6 +31,7 @@
 ### 软件截图
 
 ![首页](images/zh/home.png)
+![查分](images/zh/points.png)
 ![侧栏](images/zh/home_tab.png)
 ![cfg管理](images/zh/cfg.png)
 ![资源管理](images/zh/resouces.png)
