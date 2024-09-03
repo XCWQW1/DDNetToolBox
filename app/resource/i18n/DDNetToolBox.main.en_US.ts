@@ -101,6 +101,16 @@ A total of {} files were copied, {} files were overwritten, and {} files failed<
     </message>
 </context>
 <context>
+    <name>DDNetFolderCrash</name>
+    <message>
+        <location filename="../../view/main_interface.py" line="21"/>
+        <source>我们的程序无法自动找到DDNet配置目录
+请手动到设置中指定DDNet配置目录</source>
+        <translation>Our program cannot automatically find the DDNet configuration directory.
+Please manually specify the DDNet configuration directory in the settings.</translation>
+    </message>
+</context>
+<context>
     <name>FileSelectMessageBox</name>
     <message>
         <location filename="../../view/resource_interface.py" line="66"/>
@@ -144,34 +154,48 @@ A total of {} files were copied, {} files were overwritten, and {} files failed<
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../../view/main_interface.py" line="96"/>
+        <location filename="../../view/main_interface.py" line="123"/>
         <source>首页</source>
         <translation>Home</translation>
     </message>
     <message>
-        <location filename="../../view/main_interface.py" line="98"/>
+        <location filename="../../view/main_interface.py" line="125"/>
         <source>CFG管理</source>
         <translation>CFG Management</translation>
     </message>
     <message>
-        <location filename="../../view/main_interface.py" line="99"/>
+        <location filename="../../view/main_interface.py" line="126"/>
         <source>材质管理</source>
         <translation>Material Management</translation>
     </message>
     <message>
-        <location filename="../../view/main_interface.py" line="100"/>
+        <location filename="../../view/main_interface.py" line="127"/>
         <source>服务器列表管理</source>
         <translation>Server List Management</translation>
     </message>
     <message>
-        <location filename="../../view/main_interface.py" line="104"/>
+        <location filename="../../view/main_interface.py" line="131"/>
         <source>设置</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="../../view/main_interface.py" line="97"/>
+        <location filename="../../view/main_interface.py" line="124"/>
         <source>玩家分数查询</source>
         <translation>Player score query</translation>
+    </message>
+    <message>
+        <location filename="../../view/main_interface.py" line="60"/>
+        <source>警告</source>
+        <translation>WARNING</translation>
+    </message>
+    <message>
+        <location filename="../../view/main_interface.py" line="60"/>
+        <source>DDNet配置文件目录配置错误，部分功能将被禁用
+请于设置中修改后重启本程序
+请勿设置为DDNet游戏目录</source>
+        <translation>DDNet configuration file directory configuration error, some functions will be disabled
+Please modify in settings and restart this program
+Do not set as DDNet game directory</translation>
     </message>
 </context>
 <context>
@@ -240,12 +264,12 @@ A total of {} files were copied, {} files were overwritten, and {} files failed<
 <context>
     <name>PlayerPointInterface</name>
     <message>
-        <location filename="../../view/player_point_interface.py" line="138"/>
+        <location filename="../../view/player_point_interface.py" line="153"/>
         <source>填写要查询的玩家名称</source>
         <translation>Enter the name of the player to be queried</translation>
     </message>
     <message>
-        <location filename="../../view/player_point_interface.py" line="139"/>
+        <location filename="../../view/player_point_interface.py" line="155"/>
         <source>填写要比较的玩家名称</source>
         <translation>Enter the name of the player to compare</translation>
     </message>
@@ -266,115 +290,115 @@ A total of {} files were copied, {} files were overwritten, and {} files failed<
 <context>
     <name>ResourceInterface</name>
     <message>
-        <location filename="../../view/resource_interface.py" line="241"/>
+        <location filename="../../view/resource_interface.py" line="245"/>
         <source>我们的程序无法自动找到DDNet配置目录
 请手动到设置中指定DDNet配置目录</source>
         <translation>Our program cannot automatically find the DDNet configuration directory.
 Please manually specify the DDNet configuration directory in the settings.</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="252"/>
+        <location filename="../../view/resource_interface.py" line="256"/>
         <source>材质管理</source>
         <translation>Material Management</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="268"/>
+        <location filename="../../view/resource_interface.py" line="272"/>
         <source>皮肤</source>
         <translation>SKINS</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="269"/>
+        <location filename="../../view/resource_interface.py" line="273"/>
         <source>贴图</source>
         <translation>GAMESKINS</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="270"/>
+        <location filename="../../view/resource_interface.py" line="274"/>
         <source>表情</source>
         <translation>EMOTICONS</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="271"/>
+        <location filename="../../view/resource_interface.py" line="275"/>
         <source>光标</source>
         <translation>CURSORS</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="272"/>
+        <location filename="../../view/resource_interface.py" line="276"/>
         <source>粒子</source>
         <translation>PARTICLES</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="273"/>
+        <location filename="../../view/resource_interface.py" line="277"/>
         <source>实体层</source>
         <translation>ENTITIES</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="322"/>
+        <location filename="../../view/resource_interface.py" line="326"/>
         <source>错误</source>
         <translation>ERROR</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="303"/>
+        <location filename="../../view/resource_interface.py" line="307"/>
         <source>您没有选择任何文件</source>
         <translation>You have not selected any files</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="322"/>
+        <location filename="../../view/resource_interface.py" line="326"/>
         <source>文件 {} 复制失败
 原因：{}</source>
         <translation>File {} copy failed
 Reason: {}</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="333"/>
+        <location filename="../../view/resource_interface.py" line="337"/>
         <source>文件复制已完成
 共复制了 {} 个文件，{} 个文件被覆盖，{} 个文件失败</source>
         <translation>File copying completed
 A total of {} files were copied, {} files were overwritten, and {} files failed</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="362"/>
+        <location filename="../../view/resource_interface.py" line="366"/>
         <source>警告</source>
         <translation>WARNING</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="347"/>
+        <location filename="../../view/resource_interface.py" line="351"/>
         <source>您没有选择任何东西</source>
         <translation>You have not selected anything</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="362"/>
+        <location filename="../../view/resource_interface.py" line="366"/>
         <source>此操作将会从磁盘中永久删除下列文件，不可恢复：
 {}</source>
         <translation>This operation will permanently delete the following files from disk and cannot be recovered:
 {}</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="391"/>
+        <location filename="../../view/resource_interface.py" line="395"/>
         <source>成功</source>
         <translation> SUCCESS</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="374"/>
+        <location filename="../../view/resource_interface.py" line="378"/>
         <source>共删除 {} 个文件，{} 个文件删除失败</source>
         <translation>A total of {} files were deleted, and {} files failed to be deleted.</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="391"/>
+        <location filename="../../view/resource_interface.py" line="395"/>
         <source>已重新加载本地资源</source>
         <translation>Local resources have been reloaded</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="257"/>
+        <location filename="../../view/resource_interface.py" line="261"/>
         <source>添加</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="258"/>
+        <location filename="../../view/resource_interface.py" line="262"/>
         <source>删除</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../../view/resource_interface.py" line="259"/>
+        <location filename="../../view/resource_interface.py" line="263"/>
         <source>刷新</source>
         <translation>Refresh</translation>
     </message>
@@ -492,159 +516,179 @@ Please manually specify the DDNet configuration directory in the settings.</tran
 <context>
     <name>SettingInterface</name>
     <message>
-        <location filename="../../view/setting_interface.py" line="30"/>
+        <location filename="../../view/setting_interface.py" line="31"/>
         <source>DDNet</source>
         <translation>DDNet</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="230"/>
+        <location filename="../../view/setting_interface.py" line="235"/>
         <source>更改目录</source>
         <translation>Change Directory</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="31"/>
+        <location filename="../../view/setting_interface.py" line="32"/>
         <source>DDNet配置目录</source>
         <translation>DDNet Configuration Directory</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="39"/>
+        <location filename="../../view/setting_interface.py" line="43"/>
         <source>检测DDNet版本更新</source>
         <translation>Check DDNet version update</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="39"/>
+        <location filename="../../view/setting_interface.py" line="43"/>
         <source>在启动工具箱的时候检测DDNet客户端版本是否为最新</source>
         <translation>Check if the DDNet client version is the latest when starting the toolbox</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="48"/>
+        <location filename="../../view/setting_interface.py" line="52"/>
         <source>个性化</source>
         <translation>Personalization</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="49"/>
+        <location filename="../../view/setting_interface.py" line="53"/>
         <source>应用主题</source>
         <translation>App Theme</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="49"/>
+        <location filename="../../view/setting_interface.py" line="53"/>
         <source>调整你的应用外观</source>
         <translation>Adjust your app&apos;s appearance</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="49"/>
+        <location filename="../../view/setting_interface.py" line="53"/>
         <source>浅色</source>
         <translation>Light</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="49"/>
+        <location filename="../../view/setting_interface.py" line="53"/>
         <source>深色</source>
         <translation>Dark</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="49"/>
+        <location filename="../../view/setting_interface.py" line="53"/>
         <source>跟随系统设置</source>
         <translation>Follow system default</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="61"/>
+        <location filename="../../view/setting_interface.py" line="65"/>
         <source>主题颜色</source>
         <translation>Theme Colors</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="61"/>
+        <location filename="../../view/setting_interface.py" line="65"/>
         <source>更改应用程序的主题颜色</source>
         <translation>Change the application theme color</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="69"/>
+        <location filename="../../view/setting_interface.py" line="73"/>
         <source>缩放大小</source>
         <translation>Scaling</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="69"/>
+        <location filename="../../view/setting_interface.py" line="73"/>
         <source>更改小部件和字体的大小</source>
         <translation>Change the size of widgets and fonts</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="81"/>
+        <location filename="../../view/setting_interface.py" line="85"/>
         <source>跟随系统默认</source>
         <translation>Follow system default</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="81"/>
+        <location filename="../../view/setting_interface.py" line="85"/>
         <source>语言</source>
         <translation>Language</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="81"/>
+        <location filename="../../view/setting_interface.py" line="85"/>
         <source>更改首选语言</source>
         <translation>Change the preferred language</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="90"/>
+        <location filename="../../view/setting_interface.py" line="94"/>
         <source>其他</source>
         <translation>Other</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="156"/>
+        <location filename="../../view/setting_interface.py" line="160"/>
         <source>检查更新</source>
         <translation>Check for updates</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="91"/>
+        <location filename="../../view/setting_interface.py" line="95"/>
         <source>关于</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="91"/>
+        <location filename="../../view/setting_interface.py" line="95"/>
         <source>当前工具箱版本：{}，logo 由 燃斯(Realyn//UnU) 绘制</source>
         <translation>Current toolbox version: {}, logo drawn by Ran Si (Realyn//UnU)</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="134"/>
+        <location filename="../../view/setting_interface.py" line="138"/>
         <source>您当前的DDNetToolBox版本为 {} 最新版本为 {} 请及时更新</source>
         <translation>Your current DDNetToolBox version is {} The latest version is {} Please update in time</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="144"/>
+        <location filename="../../view/setting_interface.py" line="148"/>
         <source>您的DDNetToolBox为最新版</source>
         <translation>Your DDNetToolBox is the latest version</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="156"/>
+        <location filename="../../view/setting_interface.py" line="160"/>
         <source>正在检查更新中...</source>
         <translation>Checking for updates...</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="206"/>
+        <location filename="../../view/setting_interface.py" line="261"/>
         <source>成功</source>
         <translation>SUCCESS</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="206"/>
+        <location filename="../../view/setting_interface.py" line="210"/>
         <source>重启以应用更改</source>
         <translation>Configuration takes effect after restart</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="123"/>
+        <location filename="../../view/setting_interface.py" line="127"/>
         <source>无法访问到github</source>
         <translation>Unable to access github</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="99"/>
+        <location filename="../../view/setting_interface.py" line="103"/>
         <source>打开目录</source>
         <translation>Open Directory</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="99"/>
+        <location filename="../../view/setting_interface.py" line="103"/>
         <source>工具箱配置目录</source>
         <translation>DDNetToolbox Configuration Directory</translation>
     </message>
     <message>
-        <location filename="../../view/setting_interface.py" line="99"/>
+        <location filename="../../view/setting_interface.py" line="103"/>
         <source>打开工具箱配置文件所在目录</source>
         <translation>Open the directory where the DDNetToolBox configuration file is located</translation>
+    </message>
+    <message>
+        <location filename="../../view/setting_interface.py" line="261"/>
+        <source>识别到的DDNet配置文件夹为：{}</source>
+        <translation>The identified DDNet configuration folder is: {}</translation>
+    </message>
+    <message>
+        <location filename="../../view/setting_interface.py" line="270"/>
+        <source>错误</source>
+        <translation>ERROR</translation>
+    </message>
+    <message>
+        <location filename="../../view/setting_interface.py" line="270"/>
+        <source>没有找到DDNet配置文件夹</source>
+        <translation>DDNet configuration folder not found</translation>
+    </message>
+    <message>
+        <location filename="../../view/setting_interface.py" line="39"/>
+        <source>自动寻找</source>
+        <translation>Automatic search</translation>
     </message>
 </context>
 <context>
@@ -796,12 +840,12 @@ Join Date: No such person</translation>
 <context>
     <name>TEERankCard</name>
     <message>
-        <location filename="../../view/player_point_interface.py" line="22"/>
+        <location filename="../../view/player_point_interface.py" line="35"/>
         <source>单击刷新数据</source>
         <translation>Click Refresh Data</translation>
     </message>
     <message>
-        <location filename="../../view/player_point_interface.py" line="68"/>
+        <location filename="../../view/player_point_interface.py" line="82"/>
         <source>全球排名：加载中...
 游戏分数：加载中...
 游玩时长：加载中...
@@ -814,7 +858,7 @@ Last Completed: Loading...
 Join Date: Loading...</translation>
     </message>
     <message>
-        <location filename="../../view/player_point_interface.py" line="98"/>
+        <location filename="../../view/player_point_interface.py" line="113"/>
         <source>全球排名：NO.数据获取失败
 游戏分数：数据获取失败 分
 游玩时长：数据获取失败 小时
@@ -827,7 +871,7 @@ Last Completed: Data Retrieval Failed
 Join Date: Data Retrieval Failed</translation>
     </message>
     <message>
-        <location filename="../../view/player_point_interface.py" line="112"/>
+        <location filename="../../view/player_point_interface.py" line="127"/>
         <source>全球排名：NO.{}
 游戏分数：{}/{} 分
 游玩时长：{} 小时
@@ -840,7 +884,7 @@ Last Completed: {}
 Join Date: {}</translation>
     </message>
     <message>
-        <location filename="../../view/player_point_interface.py" line="32"/>
+        <location filename="../../view/player_point_interface.py" line="45"/>
         <source>全球排名：NaN
 游戏分数：NaN
 游玩时长：NaN
@@ -853,7 +897,7 @@ Last Completed: NaN
 Join Date: NaN</translation>
     </message>
     <message>
-        <location filename="../../view/player_point_interface.py" line="92"/>
+        <location filename="../../view/player_point_interface.py" line="107"/>
         <source>全球排名：NO.查无此人
 游戏分数：查无此人 分
 游玩时长：查无此人 小时

@@ -36,7 +36,7 @@ class SettingInterface(ScrollArea):
             cfg.get(cfg.DDNetFolder),
             self.DDNetGroup
         )
-        self.DDNetFolderButton = QPushButton('自动寻找', self.DDNetFolder)
+        self.DDNetFolderButton = QPushButton(self.tr('自动寻找'), self.DDNetFolder)
         self.DDNetFolder.hBoxLayout.addWidget(self.DDNetFolderButton, 0, Qt.AlignRight)
         self.DDNetFolder.hBoxLayout.addSpacing(16)
 
