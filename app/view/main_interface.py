@@ -2,15 +2,29 @@ import json
 import os
 import re
 
-from PyQt5.QtCore import pyqtSignal, QTimer
+from PyQt5.QtCore import pyqtSignal, QTimer, Qt
 from PyQt5.QtGui import QColor, QIcon
+from PyQt5.QtWidgets import QWidget, QHBoxLayout
 
-from qfluentwidgets import Theme, qconfig, NavigationItemPosition, FluentWindow
+from qfluentwidgets import Theme, qconfig, NavigationItemPosition, FluentWindow, SubtitleLabel, setFont, InfoBar, \
+    InfoBarPosition
 
 from app.config import cfg, base_path, config_path
 from app.globals import GlobalsVal
 
 from qfluentwidgets import FluentIcon as FIF
+
+
+class DDNetFolderCrash(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.label = SubtitleLabel(self.tr("我们的程序无法自动找到DDNet配置目录\n请手动到设置中指定DDNet配置目录"),
+                                   self)
+        self.hBoxLayout = QHBoxLayout(self)
+
+        setFont(self.label, 24)
+        self.label.setAlignment(Qt.AlignCenter)
+        self.hBoxLayout.addWidget(self.label, 1, Qt.AlignCenter)
 
 
 class MainWindow(FluentWindow):
@@ -40,6 +54,19 @@ class MainWindow(FluentWindow):
 
     def load_config_files(self):
         """加载配置文件"""
+        if all(elem in os.listdir(self.file_list) for elem in ['assets', 'ddnet-info.json', 'settings_ddnet.cfg']):
+            GlobalsVal.ddnet_folder_status = True
+        else:
+            InfoBar.warning(
+                title=self.tr('警告'),
+                content=self.tr("DDNet配置文件目录配置错误，部分功能将被禁用\n请于设置中修改后重启本程序\n请勿设置为DDNet游戏目录"),
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.BOTTOM_RIGHT,
+                duration=-1,
+                parent=self
+            )
+
         settings_file = os.path.join(self.file_list, "settings_ddnet.cfg")
         if os.path.isfile(settings_file):
             self.load_settings_ddnet_cfg(settings_file)

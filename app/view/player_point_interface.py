@@ -11,6 +11,19 @@ from app.utils.points_rank import points_rank
 from app.view.home_interface import TEEDataLoader, TEEInfo, TEEInfoList
 
 
+class ByteLimitedSearchLineEdit(SearchLineEdit):
+    def __init__(self, max_bytes, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.max_bytes = max_bytes
+        self.textChanged.connect(self.limit_text)
+
+    def limit_text(self):
+        text = self.text()
+        while len(text.encode('utf-8')) > self.max_bytes:
+            text = text[:-1]
+        self.setText(text)
+
+
 class TEERankCard(CardWidget):
     ref_status = True
 
@@ -64,7 +77,8 @@ class TEERankCard(CardWidget):
 
         self.teeRankRing.setRange(0, 100)
         self.teeRankRing.setValue(0)
-        self.teeRankRing.setFormat("G")
+        self.teeRankRing.setFormat("NaN")
+        self.tee_info_ready.emit({"player": self.name})
         self.labels[1].setText(self.tr('全球排名：加载中...\n'
                                        '游戏分数：加载中...\n'
                                        '游玩时长：加载中...\n'
@@ -85,6 +99,7 @@ class TEERankCard(CardWidget):
 
     def on_data_loaded(self, json_data: dict):
         if self.tee_info_ready is not None:
+            json_data['player'] = self.name
             self.tee_info_ready.emit(json_data)
 
         if 'error' in json_data:
@@ -131,11 +146,12 @@ class PlayerPointInterface(QWidget):
         self.searchHBoxLayout = QHBoxLayout()
         self.teeHBoxLayout = QHBoxLayout()
         self.teeRankCard = TEERankCard(self.teeinfolist.title_player_name)
-        self.searchLine = SearchLineEdit()
+        self.searchLine = ByteLimitedSearchLineEdit(15)
         self.compareTeeRankCard = TEERankCard(self.teeinfolist.title_dummy_name)
-        self.compareSearchLine = SearchLineEdit()
+        self.compareSearchLine = ByteLimitedSearchLineEdit(15)
 
         self.searchLine.setPlaceholderText(self.tr("填写要查询的玩家名称"))
+        self.searchLine.setMaxLength(15)
         self.compareSearchLine.setPlaceholderText(self.tr("填写要比较的玩家名称"))
 
         self.searchHBoxLayout.addWidget(self.searchLine)

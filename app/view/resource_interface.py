@@ -199,7 +199,11 @@ class ResourceList(SingleDirectionScrollArea):
         self.enableTransparentBackground()
         self.setWidget(self.containerWidget)
 
-        self.file_list = os.listdir(self.file_path)
+        if os.path.exists(self.file_path):
+            self.file_list = os.listdir(self.file_path)
+        else:
+            self.file_list = []
+
         self.batch_size = 1
         self.current_index = 0
 
@@ -237,7 +241,7 @@ class ResourceInterface(QWidget):
         super().__init__(parent)
         self.setObjectName("ResourceInterface")
 
-        if os.path.abspath(GlobalsVal.ddnet_folder) == os.path.abspath(os.getcwd()):
+        if not GlobalsVal.ddnet_folder_status:
             self.label = SubtitleLabel(self.tr("我们的程序无法自动找到DDNet配置目录\n请手动到设置中指定DDNet配置目录"), self)
             self.hBoxLayout = QHBoxLayout(self)
 
