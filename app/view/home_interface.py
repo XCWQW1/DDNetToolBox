@@ -456,7 +456,7 @@ class HomeInterface(QWidget):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=-1,
-                parent=self
+                parent=GlobalsVal.main_window
             )
             return
         if GlobalsVal.ddnet_info['version'] != json_data[0]["version"]:
@@ -468,7 +468,7 @@ class HomeInterface(QWidget):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=-1,
-                parent=self
+                parent=GlobalsVal.main_window
             )
 
     def TEECARD(self, player_name: str, dummy_name: str):

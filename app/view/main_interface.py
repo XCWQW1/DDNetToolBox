@@ -64,7 +64,7 @@ class MainWindow(FluentWindow):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=-1,
-                parent=self
+                parent=GlobalsVal.main_window
             )
 
         settings_file = os.path.join(self.file_list, "settings_ddnet.cfg")
@@ -170,10 +170,10 @@ class MainWindow(FluentWindow):
         self.resize(820, 600)
         theme = cfg.get(cfg.themeMode)
         theme = qconfig.theme if theme == Theme.AUTO else theme
-        self.setWindowIcon(QIcon(base_path + f'/resource/{theme.value.lower()}/logo.svg'))
+        self.setWindowIcon(QIcon(base_path + f'/resource/{theme.value.lower()}/logo.png'))
         self.setWindowTitle('DDNetToolBox')
         self.setMicaEffectEnabled(False)  # 关闭win11的云母特效
 
     def __theme_change(self, theme: Theme):
         theme = qconfig.theme if theme == Theme.AUTO else theme
-        self.setWindowIcon(QIcon(base_path + f'/resource/{theme.value.lower()}/logo.svg'))
+        self.setWindowIcon(QIcon(base_path + f'/resource/{theme.value.lower()}/logo.png'))

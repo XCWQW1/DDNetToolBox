@@ -2,13 +2,13 @@ import os
 import platform
 import subprocess
 
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt, pyqtSignal, QUrl
+from PyQt5.QtGui import QIcon, QDesktopServices
 from qfluentwidgets import (OptionsSettingCard, ScrollArea, ExpandLayout, FluentIcon, SettingCardGroup, setTheme,
                             InfoBar, isDarkTheme, Theme, PushSettingCard, SwitchSettingCard, PrimaryPushSettingCard,
                             CaptionLabel, qconfig, CustomColorSettingCard, setThemeColor, InfoBarPosition,
-                            ComboBoxSettingCard, PushButton)
-from PyQt5.QtWidgets import QWidget, QFileDialog, QPushButton
+                            ComboBoxSettingCard, PushButton, PrimaryPushButton, InfoBarIcon)
+from PyQt5.QtWidgets import QWidget, QFileDialog, QPushButton, QHBoxLayout
 from app.config import cfg, base_path, config_path
 from app.globals import GlobalsVal
 from app.utils.config_directory import get_ddnet_directory
@@ -120,7 +120,7 @@ class SettingInterface(ScrollArea):
             subprocess.run(["xdg-open", directory_path])
 
 
-    def __check_update(self, data=None):
+    def __check_update(self, data=None, on_load: bool=False):
         if data is not None:
             self.checkUpdate.button.setEnabled(True)
             if data == {}:
@@ -131,19 +131,32 @@ class SettingInterface(ScrollArea):
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
                     duration=-1,
-                    parent=self
+                    parent=GlobalsVal.main_window
                 )
+                return
 
             if GlobalsVal.DDNetToolBoxVersion != data['tag_name']:
-                InfoBar.warning(
+                self.updateInfoBar = InfoBar(
+                    icon=InfoBarIcon.WARNING,
                     title=self.tr('检查更新'),
-                    content=self.tr("您当前的DDNetToolBox版本为 {} 最新版本为 {} 请及时更新").format(GlobalsVal.DDNetToolBoxVersion, data['tag_name']),
-                    orient=Qt.Horizontal,
+                    content=self.tr("您当前的DDNetToolBox版本为 {} 最新版本为 {}").format(GlobalsVal.DDNetToolBoxVersion, data['tag_name']),
+                    orient=Qt.HorPattern,
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
                     duration=-1,
-                    parent=self
+                    parent=GlobalsVal.main_window
                 )
+                self.updateButton = PushButton('现在更新')
+                self.closeButton = PushButton('以后再说')
+                self.updateLayout = QHBoxLayout()
+
+                self.updateButton.clicked.connect(lambda: QDesktopServices.openUrl(QUrl(data['html_url'])))
+                self.closeButton.clicked.connect(lambda: self.updateInfoBar.close())
+
+                self.updateLayout.addWidget(self.updateButton)
+                self.updateLayout.addWidget(self.closeButton)
+                self.updateInfoBar.widgetLayout.addLayout(self.updateLayout)
+                self.updateInfoBar.show()
             else:
                 InfoBar.success(
                     title=self.tr('检查更新'),
@@ -152,20 +165,21 @@ class SettingInterface(ScrollArea):
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
                     duration=2000,
-                    parent=self
+                    parent=GlobalsVal.main_window
                 )
             return
 
-        self.checkUpdate.button.setEnabled(False)
-        InfoBar.info(
-            title=self.tr('检查更新'),
-            content=self.tr("正在检查更新中..."),
-            orient=Qt.Horizontal,
-            isClosable=True,
-            position=InfoBarPosition.BOTTOM_RIGHT,
-            duration=2000,
-            parent=self
-        )
+        if not on_load:
+            self.checkUpdate.button.setEnabled(False)
+            InfoBar.info(
+                title=self.tr('检查更新'),
+                content=self.tr("正在检查更新中..."),
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.BOTTOM_RIGHT,
+                duration=2000,
+                parent=GlobalsVal.main_window
+            )
 
         self.latest_release = JsonLoader('https://api.github.com/repos/XCWQW1/DDNetToolBox/releases/latest')
         self.latest_release.finished.connect(self.__check_update)
@@ -178,6 +192,7 @@ class SettingInterface(ScrollArea):
         self.setObjectName("SettingInterface")
 
         self.__setQss()
+        self.__check_update(on_load=True)
 
         # initialize layout
         self.__initLayout()
@@ -212,7 +227,7 @@ class SettingInterface(ScrollArea):
             self.tr('重启以应用更改'),
             duration=1500,
             position=InfoBarPosition.BOTTOM_RIGHT,
-            parent=self
+            parent=GlobalsVal.main_window
         )
 
     def __onThemeChanged(self, theme: Theme):

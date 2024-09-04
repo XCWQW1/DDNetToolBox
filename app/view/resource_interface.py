@@ -311,7 +311,7 @@ class ResourceInterface(QWidget):
                         isClosable=True,
                         position=InfoBarPosition.BOTTOM_RIGHT,
                         duration=2000,
-                        parent=self
+                        parent=GlobalsVal.main_window
                     )
                 else:
                     errors = 0
@@ -330,7 +330,7 @@ class ResourceInterface(QWidget):
                                 isClosable=True,
                                 position=InfoBarPosition.BOTTOM_RIGHT,
                                 duration=-1,
-                                parent=self
+                                parent=GlobalsVal.main_window
                             )
                             errors += 1
 
@@ -341,7 +341,7 @@ class ResourceInterface(QWidget):
                         isClosable=True,
                         position=InfoBarPosition.BOTTOM_RIGHT,
                         duration=2000,
-                        parent=self
+                        parent=GlobalsVal.main_window
                     )
                     self.Button_clicked("刷新")
 
@@ -355,7 +355,7 @@ class ResourceInterface(QWidget):
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
                     duration=2000,
-                    parent=self
+                    parent=GlobalsVal.main_window
                 )
                 return
 
@@ -382,7 +382,7 @@ class ResourceInterface(QWidget):
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
                     duration=2000,
-                    parent=self
+                    parent=GlobalsVal.main_window
                 )
 
                 self.Button_clicked("刷新")
@@ -399,7 +399,7 @@ class ResourceInterface(QWidget):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=2000,
-                parent=self
+                parent=GlobalsVal.main_window
             )
 
     def get_resource_pivot(self, text):

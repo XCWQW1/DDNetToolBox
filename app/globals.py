@@ -8,3 +8,4 @@ class GlobalsVal:
     DDNetToolBoxVersion = "v1.1.5"
     ddnet_folder = cfg.get(cfg.DDNetFolder)
     ddnet_folder_status = False
+    main_window = None
