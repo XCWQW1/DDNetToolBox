@@ -86,7 +86,7 @@ class ServerListInterface(QWidget):
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
                     duration=2000,
-                    parent=self
+                    parent=GlobalsVal.main_window
                 )
                 return
 
@@ -106,7 +106,7 @@ class ServerListInterface(QWidget):
                             isClosable=True,
                             position=InfoBarPosition.BOTTOM_RIGHT,
                             duration=2000,
-                            parent=self
+                            parent=GlobalsVal.main_window
                         )
                         continue
                     else:
@@ -117,7 +117,7 @@ class ServerListInterface(QWidget):
                             isClosable=True,
                             position=InfoBarPosition.BOTTOM_RIGHT,
                             duration=2000,
-                            parent=self
+                            parent=GlobalsVal.main_window
                         )
                 save_txt += f"{selected_items}\n"
 
@@ -138,7 +138,7 @@ class ServerListInterface(QWidget):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=2000,
-                parent=self
+                parent=GlobalsVal.main_window
             )
             self.Button_clicked('刷新')
         elif text == "刷新":
@@ -159,7 +159,7 @@ class ServerListInterface(QWidget):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=2000,
-                parent=self
+                parent=GlobalsVal.main_window
             )
         elif text == "重置":
             w = MessageBox(self.tr("警告"), self.tr("该操作将会覆盖现有服务器列表中的所有内容"), self)
@@ -176,7 +176,7 @@ class ServerListInterface(QWidget):
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
                     duration=2000,
-                    parent=self
+                    parent=GlobalsVal.main_window
                 )
         elif text == "一键加速":
             w = MessageBox(self.tr("警告"), self.tr("该操作将会覆盖现有服务器列表中的所有内容"), self)
@@ -193,5 +193,5 @@ class ServerListInterface(QWidget):
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
                     duration=2000,
-                    parent=self
+                    parent=GlobalsVal.main_window
                 )

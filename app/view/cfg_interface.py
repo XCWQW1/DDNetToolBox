@@ -129,7 +129,7 @@ class CFGInterface(QWidget):
                         isClosable=True,
                         position=InfoBarPosition.BOTTOM_RIGHT,
                         duration=2000,
-                        parent=self
+                        parent=GlobalsVal.main_window
                     )
                 else:
                     errors = 0
@@ -148,7 +148,7 @@ class CFGInterface(QWidget):
                                 isClosable=True,
                                 position=InfoBarPosition.BOTTOM_RIGHT,
                                 duration=-1,
-                                parent=self
+                                parent=GlobalsVal.main_window
                             )
                             errors += 1
 
@@ -159,7 +159,7 @@ class CFGInterface(QWidget):
                         isClosable=True,
                         position=InfoBarPosition.BOTTOM_RIGHT,
                         duration=2000,
-                        parent=self
+                        parent=GlobalsVal.main_window
                     )
                     self.Button_clicked("刷新")
         elif text == "删除":
@@ -172,7 +172,7 @@ class CFGInterface(QWidget):
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
                     duration=2000,
-                    parent=self
+                    parent=GlobalsVal.main_window
                 )
                 return
 
@@ -203,7 +203,7 @@ class CFGInterface(QWidget):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=2000,
-                parent=self
+                parent=GlobalsVal.main_window
             )
 
         elif text == "刷新":
@@ -232,7 +232,7 @@ class CFGInterface(QWidget):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=2000,
-                parent=self
+                parent=GlobalsVal.main_window
             )
 
 

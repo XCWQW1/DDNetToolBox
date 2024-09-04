@@ -9,6 +9,7 @@ from PyQt5.QtCore import Qt, QTranslator
 from PyQt5.QtWidgets import QApplication, QWidget, QDialog, QTextEdit, QVBoxLayout, QHBoxLayout, QPushButton
 
 from app.view.main_interface import MainWindow
+from app.globals import GlobalsVal
 
 
 class CrashApp(QWidget):
@@ -75,9 +76,9 @@ def init_window():
     app.installTranslator(Translator)
     app.installTranslator(CrashTranslator)
 
-    w = MainWindow()
+    GlobalsVal.main_window = MainWindow()
 
-    w.show()
+    GlobalsVal.main_window.show()
     app.exec_()
 
 

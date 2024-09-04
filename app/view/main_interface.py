@@ -64,7 +64,7 @@ class MainWindow(FluentWindow):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=-1,
-                parent=self
+                parent=GlobalsVal.main_window
             )
 
         settings_file = os.path.join(self.file_list, "settings_ddnet.cfg")

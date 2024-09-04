@@ -85,7 +85,7 @@ class ServerListPreviewInterface(QWidget):
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
                     duration=2000,
-                    parent=self
+                    parent=GlobalsVal.main_window
                 )
                 return
 
@@ -105,7 +105,7 @@ class ServerListPreviewInterface(QWidget):
                             isClosable=True,
                             position=InfoBarPosition.BOTTOM_RIGHT,
                             duration=2000,
-                            parent=self
+                            parent=GlobalsVal.main_window
                         )
                         continue
                     else:
@@ -116,7 +116,7 @@ class ServerListPreviewInterface(QWidget):
                             isClosable=True,
                             position=InfoBarPosition.BOTTOM_RIGHT,
                             duration=2000,
-                            parent=self
+                            parent=GlobalsVal.main_window
                         )
                 save_txt += f"{selected_items}\n"
 
@@ -137,7 +137,7 @@ class ServerListPreviewInterface(QWidget):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=2000,
-                parent=self
+                parent=GlobalsVal.main_window
             )
             self.Button_clicked('刷新')
         elif text == "刷新":
@@ -158,7 +158,7 @@ class ServerListPreviewInterface(QWidget):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=2000,
-                parent=self
+                parent=GlobalsVal.main_window
             )
         elif text == "重置":
             w = MessageBox("警告", "该操作将会覆盖本地文件中的所有内容", self)
@@ -183,5 +183,5 @@ class ServerListPreviewInterface(QWidget):
                     isClosable=True,
                     position=InfoBarPosition.BOTTOM_RIGHT,
                     duration=2000,
-                    parent=self
+                    parent=GlobalsVal.main_window
                 )

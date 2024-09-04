@@ -293,7 +293,7 @@ class ResourceDownloadInterface(QWidget):
                 isClosable=True,
                 position=InfoBarPosition.BOTTOM_RIGHT,
                 duration=2000,
-                parent=self
+                parent=GlobalsVal.main_window
             )
 
     def get_resource_pivot(self, text):
